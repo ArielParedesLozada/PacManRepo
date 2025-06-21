@@ -95,6 +95,7 @@ public class GhostInitializer : MonoBehaviour
             _container.Inject(controller);
             _container.Bind<GhostEntity>().FromInstance(entity).AsTransient();
             controller.GetType().GetField("_entity", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(controller, entity);
+            entity.View = view;
             controller.Initialize(
                 _moveGhostUseCase,
                 entity,

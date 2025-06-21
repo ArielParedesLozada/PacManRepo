@@ -481,51 +481,52 @@ public class GameBoardView : MonoBehaviour, IGameBoardGateway {
 		StartCoroutine (ShowObjectsAfter (2.25f));
 	}
 
-	public void StartConsumed (GhostView consumedGhost) {
-
-		if (!didStartConsumed) {
-
+	public void StartConsumed(GhostView consumedGhost)
+	{
+		if (!didStartConsumed)
+		{
 			didStartConsumed = true;
 
-			//- Pause all the ghosts
-			GameObject[] o = GameObject.FindGameObjectsWithTag ("Ghost");
+			GameObject[] o = GameObject.FindGameObjectsWithTag("Ghost");
 
-			foreach (GameObject ghost in o) {
-
-				ghost.transform.GetComponent<GhostView> ().canMove = false;
+			foreach (GameObject ghost in o)
+			{
+				var ghostView = ghost.GetComponent<GhostView>();
+				if (ghostView != null)
+					ghostView.canMove = false;
 			}
 
-			//- Pause Pac-Man
-			GameObject pacMan = GameObject.Find ("PacMan");
-			pacMan.transform.GetComponent<PacManView> ().canMove = false;
+			GameObject pacMan = GameObject.Find("PacMan");
+			if (pacMan != null)
+			{
+				var pacView = pacMan.GetComponent<PacManView>();
+				var sprite = pacMan.GetComponent<SpriteRenderer>();
 
-			//- Hide Pac-Man
-			pacMan.transform.GetComponent<SpriteRenderer> ().enabled = false;
-
-			//- Hide the consumed ghost
-			consumedGhost.transform.GetComponent<SpriteRenderer>().enabled = false;
-
-			//- Stop background Music
-			transform.GetComponent<AudioSource> ().Stop ();
+				if (pacView != null) pacView.canMove = false;
+				if (sprite != null) sprite.enabled = false;
+			}
 
 			Vector2 pos = consumedGhost.transform.position;
+			Vector2 viewPortPoint = Camera.main.WorldToViewportPoint(pos);
+			if (consumedGhostScoreText != null)
+			{
+				consumedGhostScoreText.GetComponent<RectTransform>().anchorMin = viewPortPoint;
+				consumedGhostScoreText.GetComponent<RectTransform>().anchorMax = viewPortPoint;
+				consumedGhostScoreText.text = ghostConsumedRunningScore.ToString();
+				consumedGhostScoreText.GetComponent<Text>().enabled = true;
+			}
+			else
+			{
+				Debug.LogWarning("ConsumedGhostScoreText no está asignado en el Inspector.");
+			}
 
-			Vector2 viewPortPoint = Camera.main.WorldToViewportPoint (pos);
+			GetComponent<AudioSource>().Stop();
+			GetComponent<AudioSource>().PlayOneShot(consumedGhostAudioClip);
 
-			consumedGhostScoreText.GetComponent<RectTransform> ().anchorMin = viewPortPoint;
-			consumedGhostScoreText.GetComponent<RectTransform> ().anchorMax = viewPortPoint;
-
-			consumedGhostScoreText.text = ghostConsumedRunningScore.ToString ();
-
-			consumedGhostScoreText.GetComponent<Text> ().enabled = true;
-
-			//- Play the consumed sound
-			transform.GetComponent<AudioSource> ().PlayOneShot (consumedGhostAudioClip);
-
-			//- Wait for the audio clip to finish
-			StartCoroutine (ProcessConsumedAfter (0.75f, consumedGhost));
+			StartCoroutine(ProcessConsumedAfter(0.75f, consumedGhost));
 		}
 	}
+
 
 	public void StartConsumedBonusItem (GameObject bonusItem, int scorevalue) {
 

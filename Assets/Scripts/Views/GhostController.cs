@@ -90,6 +90,7 @@ public class GhostController : MonoBehaviour
         _pacEntity = pacEntity;
         _collisionUseCase = collisionUseCase;
         _gameBoard = gameBoard;
+        _entity.View = _view;
     }
 
     public GhostEntity GetEntity()

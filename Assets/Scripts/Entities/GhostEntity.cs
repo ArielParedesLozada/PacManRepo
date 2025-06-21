@@ -8,6 +8,7 @@ public enum GhostType { Red, Pink, Blue, Orange }
 
 public class GhostEntity
 {
+
     // --- Estado de posición y navegación ---
     public Vector2 Position { get; set; }
     public Vector2 Direction { get; set; }
@@ -57,6 +58,8 @@ public class GhostEntity
 
     // --- Tipo y constructor básico ---
     public GhostType Type { get; }
+    public GhostView View { get; set; }
+
 
     public GhostEntity(
         Node startNode,

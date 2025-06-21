@@ -16,6 +16,9 @@ public class PacManEntity
 
     public Vector2 Size { get; set; } = new Vector2(1, 1);
 
+    public Node StartingNode { get; private set; }
+
+
 
     public PacManEntity(Node startNode, float startSpeed)
     {
@@ -27,6 +30,7 @@ public class PacManEntity
         Speed = startSpeed;
         CanMove = true;
         TargetNode = null;
+        StartingNode = startNode;
     }
 
     public void SetLevel(int level)
@@ -49,4 +53,19 @@ public class PacManEntity
 
         return null;
     }
+
+    public void ResetState()
+    {
+        CanMove = false;
+        Direction = Vector2.left;
+        NextDirection = Vector2.left;
+
+        if (CurrentNode != null)
+        {
+            Position = CurrentNode.transform.position;
+            PreviousNode = CurrentNode;
+            TargetNode = GetInitialTargetNode(CurrentNode, Direction);
+        }
+    }
+
 }

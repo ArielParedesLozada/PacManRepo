@@ -14,4 +14,6 @@ public interface IGameBoardGateway
     void SetTileAt(int x, int y, GameObject obj);
 
     void StartDeath();
+    void StartConsumed(GhostView consumedGhost);
+
 }

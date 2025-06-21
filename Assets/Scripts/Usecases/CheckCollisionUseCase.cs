@@ -14,6 +14,7 @@ public class CheckCollisionUseCase : ICheckCollisionUseCase
             if (ghost.Mode == GhostMode.Frightened)
             {
                 ghost.Consume();
+                gameBoard.StartConsumed(ghost.View);
                 return;
             }
 

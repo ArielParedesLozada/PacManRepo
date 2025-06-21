@@ -32,6 +32,7 @@ public class PacManView : MonoBehaviour
 
     Vector3 _startLocalPos;
 
+
     bool _playedChomp1 = false;
 
     void Awake()
@@ -40,6 +41,7 @@ public class PacManView : MonoBehaviour
         _anim = GetComponent<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
         _startLocalPos = transform.localPosition;
+
     }
 
     /// <summary>
@@ -151,5 +153,19 @@ public class PacManView : MonoBehaviour
         yield return new WaitForSeconds(duration);
         SetDifficultyForLevel(GameBoardView.playerOneLevel);
     }
+
+    public void PlayDeathAnimation()
+    {
+        _anim.runtimeAnimatorController = deathAnimation;
+        _anim.enabled = true;
+    }
+
+    public void RestartAnimation()
+    {
+        _anim.runtimeAnimatorController = chompAnimation;
+        _anim.enabled = true;
+    }
+
+
 
 }
