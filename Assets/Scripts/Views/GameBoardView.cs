@@ -630,58 +630,66 @@ public class GameBoardView : MonoBehaviour, IGameBoardGateway {
 		transform.GetComponent<AudioSource> ().Play ();
 	}
 
-	public void StartDeath () {
+	public void StartDeath()
+	{
+		if (!didStartDeath)
+		{
+			StopAllCoroutines();
 
-		if (!didStartDeath) {
-
-			StopAllCoroutines ();
-
-			if (GameMenu.isOnePlayerGame) {
-
-				playerOneUp.GetComponent<Text> ().enabled = true;
-			} else {
-
-				playerOneUp.GetComponent<Text> ().enabled = true;
-				playerTwoUp.GetComponent<Text> ().enabled = true;
+			// Mostrar quién está jugando
+			if (GameMenu.isOnePlayerGame)
+			{
+				playerOneUp.GetComponent<Text>().enabled = true;
+			}
+			else
+			{
+				playerOneUp.GetComponent<Text>().enabled = true;
+				playerTwoUp.GetComponent<Text>().enabled = true;
 			}
 
-			GameObject bonusItem = GameObject.Find ("bonusItem");
-
+			// Eliminar ítem de bonus si existe
+			GameObject bonusItem = GameObject.Find("bonusItem");
 			if (bonusItem)
-				Destroy (bonusItem.gameObject);
+				Destroy(bonusItem.gameObject);
 
 			didStartDeath = true;
 
-			GameObject[] o = GameObject.FindGameObjectsWithTag ("Ghost");
-
-			foreach (GameObject ghost in o) {
-
-				ghost.transform.GetComponent<GhostView> ().canMove = false;
+			// Detener movimiento de fantasmas
+			GameObject[] ghosts = GameObject.FindGameObjectsWithTag("Ghost");
+			foreach (GameObject ghost in ghosts)
+			{
+				var ghostView = ghost.GetComponent<GhostView>();
+				var ghostController = ghost.GetComponent<GhostController>();
+				if (ghostView != null)
+					ghostView.canMove = false;
+				if (ghostController != null && ghostController.GetEntity() != null)
+					ghostController.GetEntity().CanMove = false;
 			}
-			
-			GameObject pacMan = GameObject.Find ("PacMan");
-			pacMan.transform.GetComponent<PacManView> ().canMove = false;
 
-			pacMan.transform.GetComponent<Animator> ().enabled = false;
+			// Detener Pac-Man y reproducir animación de muerte
+			GameObject pacMan = GameObject.Find("PacMan");
+			if (pacMan != null)
+			{
+				var pacView = pacMan.GetComponent<PacManView>();
+				var pacController = pacMan.GetComponent<PacManController>();
+				if (pacView != null)
+				{
+					pacView.canMove = false;
+					pacView.PlayDeath();
+				}
+				if (pacController != null && pacController.GetEntity() != null)
+				{
+					pacController.GetEntity().CanMove = false; 
+				}
+			}
 
-			transform.GetComponent<AudioSource> ().Stop ();
+			// Detener música de fondo
+			GetComponent<AudioSource>().Stop();
 
-			StartCoroutine (ProcessDeathAfter (2));
+			// Mostrar animación de muerte y continuar con reinicio
+			StartCoroutine(ProcessDeathAnimation(1.9f));
+
 		}
-	}
-
-	IEnumerator ProcessDeathAfter (float delay) {
-
-		yield return new WaitForSeconds (delay);
-
-		GameObject[] o = GameObject.FindGameObjectsWithTag ("Ghost");
-
-		foreach (GameObject ghost in o) {
-
-			ghost.transform.GetComponent<SpriteRenderer> ().enabled = false;
-		}
-
-		StartCoroutine (ProcessDeathAnimation (1.9f));
 	}
 
 	IEnumerator ProcessDeathAnimation (float delay) {
@@ -701,6 +709,7 @@ public class GameBoardView : MonoBehaviour, IGameBoardGateway {
 
 		StartCoroutine (ProcessRestart (1));
 	}
+
 
 	IEnumerator ProcessRestart (float delay) {
 

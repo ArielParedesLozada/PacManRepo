@@ -89,4 +89,9 @@ public class PacManController : MonoBehaviour
         else if (dir == Vector2.down)
             transform.localRotation = Quaternion.Euler(0, 0, 270);
     }
+    public PacManEntity GetEntity()
+    {
+        return _entity;
+    }
+
 }

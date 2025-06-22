@@ -76,8 +76,19 @@ public class PacManView : MonoBehaviour
     /// </summary>
     public void PlayDeath()
     {
-        _anim.runtimeAnimatorController = deathAnimation;
-        _anim.enabled = true;
+        if (_anim == null) _anim = GetComponent<Animator>();
+        if (_sprite == null) _sprite = GetComponent<SpriteRenderer>();
+
+        if (deathAnimation != null)
+        {
+            _anim.runtimeAnimatorController = deathAnimation;
+            _anim.enabled = true;
+            _sprite.enabled = true; // por si se ocultó
+        }
+        else
+        {
+            Debug.LogWarning("deathAnimation no está asignado en PacManView.");
+        }
     }
 
     /// <summary>
