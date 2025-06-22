@@ -41,5 +41,7 @@ public class DependencyInjector : MonoInstaller
         .To<CheckCollisionUseCase>()
         .AsTransient();
 
+        Container.Bind<IConsumeBonusItemUseCase>().To<ConsumeBonusItemUseCase>().AsSingle();
+
     }
 }

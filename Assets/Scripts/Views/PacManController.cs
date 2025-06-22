@@ -9,6 +9,7 @@ public class PacManController : MonoBehaviour
     private IConsumePelletUseCase _consumePellet; // NUEVO
     private PacManEntity _entity;
     private PacManView _view;
+    private IConsumeBonusItemUseCase _consumeBonusItemUseCase;
 
     private bool _isReady = false;
 
@@ -17,12 +18,14 @@ public class PacManController : MonoBehaviour
         IMovePacManUseCase moveUseCase,
         PacManEntity entity,
         PacManView view,
-        IConsumePelletUseCase consumePellet)
+        IConsumePelletUseCase consumePellet,
+        IConsumeBonusItemUseCase consumeBonusItemUseCase)
     {
         _moveUseCase = moveUseCase;
         _entity = entity;
         _view = view;
         _consumePellet = consumePellet;
+        _consumeBonusItemUseCase = consumeBonusItemUseCase;
         _isReady = true;
     }
 
@@ -54,6 +57,7 @@ public class PacManController : MonoBehaviour
 
         // 3) Consumir pellet y reproducir sonido solo si realmente se consumió
         bool atePellet = _consumePellet.Execute(_entity.Position);
+        bool ateBonus = _consumeBonusItemUseCase.Execute(_entity.Position, GameBoardView.isPlayerOneUp);
 
         // 4) Actualizar posición visual SOLO si se está moviendo
         if (transform.position != (Vector3)_entity.Position)

@@ -101,8 +101,6 @@ public class MoveGhostUseCase : IMoveGhostUseCase
                     {
                         g.CurrentNode = portal.portalReceiver.GetComponent<Node>();
                         g.Position = g.CurrentNode.transform.position;
-
-                        Debug.Log($"{g.Type} usó un portal hacia {g.CurrentNode.transform.position}");
                     }
                 }
 
