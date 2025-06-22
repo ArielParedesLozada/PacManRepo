@@ -90,6 +90,22 @@ public class MoveGhostUseCase : IMoveGhostUseCase
                 g.CurrentNode = g.TargetNode;
                 g.Position = g.CurrentNode.transform.position;
 
+                GameObject tile = _board.GetTileAt(
+               Mathf.RoundToInt(g.Position.x),
+               Mathf.RoundToInt(g.Position.y));
+
+                if (tile != null)
+                {
+                    var portal = tile.GetComponent<Tile>();
+                    if (portal != null && portal.isPortal && portal.portalReceiver != null)
+                    {
+                        g.CurrentNode = portal.portalReceiver.GetComponent<Node>();
+                        g.Position = g.CurrentNode.transform.position;
+
+                        Debug.Log($"{g.Type} usó un portal hacia {g.CurrentNode.transform.position}");
+                    }
+                }
+
                 // Salir del modo Consumed al llegar a la casa
                 if (g.CurrentMode == GhostMode.Consumed &&
             Vector2.Distance(g.Position, g.GhostHouse.transform.position) < 0.1f)
