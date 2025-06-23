@@ -106,14 +106,29 @@ public class MoveGhostUseCase : IMoveGhostUseCase
 
                 // Salir del modo Consumed al llegar a la casa
                 if (g.CurrentMode == GhostMode.Consumed &&
-            Vector2.Distance(g.Position, g.GhostHouse.transform.position) < 0.1f)
+                    Vector2.Distance(g.Position, g.GhostHouse.transform.position) < 0.1f)
                 {
                     g.CurrentMode = GhostMode.Scatter;
                     g.PreviousMode = GhostMode.Scatter;
                     g.Speed = g.NormalSpeed;
                     g.IsInGhostHouse = false;
 
-                    Debug.Log($"{g.Type} ha llegado a la casa y regresa a Scatter.");
+                    g.ModeTimer = 0f; // Reinicia el timer de modo
+                    g.ModeChangeIteration = 1;
+
+                    g.CurrentNode = g.GhostHouse;
+                    var exitNode = g.GhostHouse.GetNeighborInDirection(Vector2.up); // Usa la dirección correcta
+                    if (exitNode != null)
+                    {
+                        g.TargetNode = exitNode;
+                        g.Direction = (exitNode.transform.position - g.GhostHouse.transform.position).normalized;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"{g.Type} no tiene nodo de salida válido desde la casa.");
+                        g.TargetNode = null;
+                    }
+                    g.Position = g.GhostHouse.transform.position;
                 }
             }
         }

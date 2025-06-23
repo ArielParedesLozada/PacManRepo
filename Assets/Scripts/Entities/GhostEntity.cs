@@ -132,6 +132,7 @@ public class GhostEntity
         ModeTimer = FrightenedTimer = ReleaseTimer = 0f;
         ModeChangeIteration = 1;
         CurrentMode = GhostMode.Scatter;
+        // IsInGhostHouse = false;
         CanMove = true;
     }
 
