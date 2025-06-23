@@ -9,7 +9,7 @@ public enum GhostType { Red, Pink, Blue, Orange }
 public class GhostEntity
 {
 
-    // --- Estado de posición y navegación ---
+    // --- Estado de posiciï¿½n y navegaciï¿½n ---
     public Vector2 Position { get; set; }
     public Vector2 Direction { get; set; }
     public Vector2 NextDirection { get; set; }
@@ -19,7 +19,7 @@ public class GhostEntity
     public Vector2 Size { get; set; } = new Vector2(1, 1);
     public GhostMode Mode => CurrentMode;
 
-    // --- Configuración de velocidad y movimiento ---
+    // --- Configuraciï¿½n de velocidad y movimiento ---
     public float Speed { get; set; }
     public bool CanMove { get; set; }
     public float NormalSpeed { get; set; }
@@ -56,7 +56,7 @@ public class GhostEntity
     public Node HomeNode { get; set; }
     public Node GhostHouse { get; set; }
 
-    // --- Tipo y constructor básico ---
+    // --- Tipo y constructor bï¿½sico ---
     public GhostType Type { get; }
     public GhostView View { get; set; }
 
@@ -79,7 +79,7 @@ public class GhostEntity
         float scatter4
     )
     {
-        // navegación
+        // navegaciï¿½n
         CurrentNode = startNode;
         PreviousNode = null;
         TargetNode = startNode;
@@ -123,8 +123,10 @@ public class GhostEntity
     }
     public void ResetToStart()
     {
-        CurrentNode = PreviousNode = TargetNode = null;
-        Position = Vector2.zero;
+        CurrentNode = HomeNode;
+        PreviousNode = null;
+        TargetNode = HomeNode;
+        Position = HomeNode.transform.position;
         Direction = Vector2.left;
         NextDirection = Vector2.left;
         ModeTimer = FrightenedTimer = ReleaseTimer = 0f;

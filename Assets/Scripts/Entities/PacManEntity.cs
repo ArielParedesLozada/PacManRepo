@@ -66,6 +66,7 @@ public class PacManEntity
             PreviousNode = CurrentNode;
             TargetNode = GetInitialTargetNode(CurrentNode, Direction);
         }
+        CanMove = true;
     }
 
 }

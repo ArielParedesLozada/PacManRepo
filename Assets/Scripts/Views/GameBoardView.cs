@@ -869,13 +869,36 @@ public class GameBoardView : MonoBehaviour, IGameBoardGateway {
 
 
 		GameObject pacMan = GameObject.Find ("PacMan");
-		pacMan.transform.GetComponent<PacManView> ().Restart ();
+		// pacMan.transform.GetComponent<PacManView> ().Restart ();
+
+		var pacController = pacMan.GetComponent<PacManController>();
+		var pacView = pacMan.GetComponent<PacManView>();
+		if (pacController != null && pacController.GetEntity() != null)
+		{
+			var killPacManUseCase = new KillPacManUseCase();
+			StartCoroutine(killPacManUseCase.Execute(pacController.GetEntity(), pacView));
+			// pacController.GetEntity().CanMove = true;
+		}
 
 		GameObject[] o = GameObject.FindGameObjectsWithTag ("Ghost");
 
-		foreach (GameObject ghost in o) {
+		foreach (GameObject ghost in o)
+		{
+			var ghostController = ghost.GetComponent<GhostController>();
+			var ghostView = ghost.GetComponent<GhostView>();
 
-			ghost.transform.GetComponent<GhostView> ().Restart ();
+			// 1. Resetea la lógica (posición y movimiento)
+			if (ghostController != null && ghostController.GetEntity() != null)
+			{
+				ghostController.GetEntity().ResetToStart();
+			}
+
+			// 2. Resetea la vista (sprite, animación)
+			if (ghostView != null)
+			{
+				ghostView.MoveToStartingPosition(); // Opcional: si quieres teletransportar visualmente
+				ghostView.Restart();
+			}
 		}
 
 		transform.GetComponent<AudioSource> ().clip = backgroundAudioNormal;

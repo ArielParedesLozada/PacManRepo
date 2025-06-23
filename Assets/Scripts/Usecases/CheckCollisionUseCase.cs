@@ -20,7 +20,7 @@ public class CheckCollisionUseCase : ICheckCollisionUseCase
 
             if (ghost.Mode != GhostMode.Consumed)
             {
-                Debug.Log("Ghost colisionó con Pac-Man. Iniciando muerte.");
+                Debug.Log("Ghost colisionï¿½ con Pac-Man. Iniciando muerte.");
                 gameBoard.StartDeath();
             }
         }
