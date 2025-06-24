@@ -6,17 +6,17 @@ public class KillPacManUseCase : IKillPacManUseCase
 {
     public IEnumerator Execute(PacManEntity entity, PacManView view)
     {
-        // Desactiva movimiento y reproduce animación de muerte
+        // Desactiva movimiento y reproduce animaciï¿½n de muerte
         entity.CanMove = false;
         view.PlayDeathAnimation();
 
-        // Espera animación
+        // Espera animaciï¿½n
         yield return new WaitForSeconds(2f);
 
-        // Mueve a posición inicial y coloca sprite idle
+        // Mueve a posiciï¿½n inicial y coloca sprite idle
         view.MoveToStartingPosition();
 
-        // Reinicia animación y estado como Restart() 
+        // Reinicia animaciï¿½n y estado como Restart() 
         view.RestartAnimation();
         entity.ResetState();
 

@@ -60,11 +60,12 @@ public class PacManEntity
         Direction = Vector2.left;
         NextDirection = Vector2.left;
 
-        if (CurrentNode != null)
+        if (StartingNode != null)
         {
-            Position = CurrentNode.transform.position;
-            PreviousNode = CurrentNode;
-            TargetNode = GetInitialTargetNode(CurrentNode, Direction);
+            CurrentNode = StartingNode;
+            Position = StartingNode.transform.position;
+            PreviousNode = StartingNode;
+            TargetNode = GetInitialTargetNode(StartingNode, Direction);
         }
         CanMove = true;
     }

@@ -839,7 +839,7 @@ public class GameBoardView : MonoBehaviour, IGameBoardGateway {
 
 		pacMan.transform.GetComponent<Animator> ().enabled = false;
 		pacMan.transform.GetComponent<SpriteRenderer> ().enabled = true;
-		pacMan.transform.GetComponent<PacManView> ().MoveToStartingPosition ();
+		// pacMan.transform.GetComponent<PacManView> ().MoveToStartingPosition ();
 
 		yield return new WaitForSeconds (delay);
 
