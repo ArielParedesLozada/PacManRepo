@@ -28,23 +28,13 @@ public class ConsumePelletUseCase : IConsumePelletUseCase
 
         bool consumed = false;
 
-        if (GameBoardView.isPlayerOneUp)
+        if (GameBoardView.isCurrentPlayerUp)
         {
             if (!tile.didConsumePlayerOne && (tile.isPellet || tile.isSuperPellet))
             {
                 tile.didConsumePlayerOne = true;
-                GameMenu.playerOnePelletsConsumed++;
-                GameBoardView.playerOneScore += tile.isSuperPellet ? 50 : 10;
-                consumed = true;
-            }
-        }
-        else
-        {
-            if (!tile.didConsumePlayerTwo && (tile.isPellet || tile.isSuperPellet))
-            {
-                tile.didConsumePlayerTwo = true;
-                GameMenu.playerTwoPelletsConsumed++;
-                GameBoardView.playerTwoScore += tile.isSuperPellet ? 50 : 10;
+                GameMenu.currentPlayerPelletsConsumed++;
+                GameBoardView.currentPlayerScore += tile.isSuperPellet ? 50 : 10;
                 consumed = true;
             }
         }
@@ -52,7 +42,7 @@ public class ConsumePelletUseCase : IConsumePelletUseCase
         if (consumed)
         {
             tileObj.GetComponent<SpriteRenderer>().enabled = false;
-            view.OnPelletConsumed(); // Animación visual u otros efectos
+            view.OnPelletConsumed(); // Animaciï¿½n visual u otros efectos
             view.IncreaseSpeedTemporarily(2f, 1.5f); // por ejemplo
 
             if (tile.isSuperPellet)

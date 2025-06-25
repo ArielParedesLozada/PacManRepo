@@ -25,9 +25,7 @@ public class ConsumeBonusItemUseCase : IConsumeBonusItemUseCase
             int score = tile.pointValue;
 
             if (isPlayerOne)
-                GameBoardView.playerOneScore += score;
-            else
-                GameBoardView.playerTwoScore += score;
+                GameBoardView.currentPlayerScore += score;
 
             GameObject.Find("Game").GetComponent<GameBoardView>()
                 .StartConsumedBonusItem(tile.gameObject, score);

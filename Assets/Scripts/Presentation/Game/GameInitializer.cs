@@ -48,7 +48,7 @@ public class GameInitializer : MonoBehaviour
         }
 
         var entity = new PacManEntity(node, _pacManView.speed);
-        entity.SetLevel(GameBoardView.isPlayerOneUp ? GameBoardView.playerOneLevel : GameBoardView.playerTwoLevel);
+        entity.SetLevel(new LevelSetter().GetLevel());
 
         // Asegura que el TargetNode inicial sea válido
         var firstTarget = GetInitialTargetNode(node, Vector2.left);

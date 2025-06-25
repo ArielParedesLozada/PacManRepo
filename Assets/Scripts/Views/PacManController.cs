@@ -57,7 +57,7 @@ public class PacManController : MonoBehaviour
 
         // 3) Consumir pellet y reproducir sonido solo si realmente se consumió
         bool atePellet = _consumePellet.Execute(_entity.Position);
-        bool ateBonus = _consumeBonusItemUseCase.Execute(_entity.Position, GameBoardView.isPlayerOneUp);
+        bool ateBonus = _consumeBonusItemUseCase.Execute(_entity.Position, GameBoardView.isCurrentPlayerUp);
 
         // 4) Actualizar posición visual SOLO si se está moviendo
         if (transform.position != (Vector3)_entity.Position)

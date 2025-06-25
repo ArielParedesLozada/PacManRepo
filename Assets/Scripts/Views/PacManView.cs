@@ -162,7 +162,7 @@ public class PacManView : MonoBehaviour
     IEnumerator ResetSpeedAfterDelay(float duration)
     {
         yield return new WaitForSeconds(duration);
-        SetDifficultyForLevel(GameBoardView.playerOneLevel);
+        SetDifficultyForLevel(GameBoardView.currentPlayerLevel);
     }
 
     public void PlayDeathAnimation()

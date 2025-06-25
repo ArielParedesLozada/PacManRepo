@@ -59,7 +59,7 @@ public class GhostInitializer : MonoBehaviour
             else if (ghostGO.name.Contains("Inky")) type = GhostType.Blue;
             else if (ghostGO.name.Contains("Clyde")) type = GhostType.Orange;
 
-            int level = GameBoardView.isPlayerOneUp ? GameBoardView.playerOneLevel : GameBoardView.playerTwoLevel;
+            int level = new LevelSetter().GetLevel();
 
             var entity = new GhostEntity(
                 node,
