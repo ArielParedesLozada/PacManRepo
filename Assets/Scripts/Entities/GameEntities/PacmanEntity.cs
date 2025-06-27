@@ -1,6 +1,6 @@
 using System;
 
-public enum PacManState { Alive, Dead, Still, }
+public enum PacManState { Alive, Dead, Still, Empowered,}
 public class PacmanEntity
 {
     public IPosition Size { get; set; } = null;
@@ -30,5 +30,10 @@ public class PacmanEntity
         PacManState = PacManState.Dead;
         Speed = 0;
         Direction = null;
+    }
+
+    public void Empower()
+    {
+        PacManState = PacManState.Empowered;
     }
 }

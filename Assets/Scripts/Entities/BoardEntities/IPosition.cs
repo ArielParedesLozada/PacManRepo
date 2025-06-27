@@ -10,5 +10,6 @@ public interface IPosition
     IPosition Normalize();
     float DistanceTo(IPosition other);
     bool Equals(IPosition other);
+    IPosition Zero();
     string ToString();
 }

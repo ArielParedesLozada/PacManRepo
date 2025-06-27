@@ -1,11 +1,6 @@
 public class CollisionFrightened : IStrategyGhostCollision
 {
-    private PacmanEntity _pacMan;
-    public CollisionFrightened(PacmanEntity pacman)
-    {
-        _pacMan = pacman;
-    }
-    public void Collide(PhantomEntity phantom)
+    public void Collide(PhantomEntity phantom, PacmanEntity pacman, ISubjectGame game)
     {
         phantom.Die();
     }

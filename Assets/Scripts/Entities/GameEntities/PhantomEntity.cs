@@ -8,6 +8,7 @@ public class PhantomEntity
     public NodeEntity TargetNode { get; set; }
     public NodeEntity PreviousNode { get; set; }
     public NodeEntity CurrentNode { get; set; }
+    public NodeEntity HomeNode { get; set; }
     public IPosition Size { get; set; }
     public float Speed { get; set; }
     public GhostState State { get; set; }
@@ -16,6 +17,17 @@ public class PhantomEntity
     public void Die()
     {
         State = GhostState.Consumed;
-        Direction = null;
+    }
+
+    public void Revive()
+    {
+        State = GhostState.Scatter;
+        Direction = Direction.Zero().Add(new Position(0, 1));
+    }
+
+    public void Deactivate()
+    {
+        State = GhostState.Still;
+        Direction = Direction.Zero();
     }
 }

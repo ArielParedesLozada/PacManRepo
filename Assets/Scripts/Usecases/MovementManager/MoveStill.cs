@@ -1,18 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class MoveStill : MonoBehaviour
+public class MoveStill : IStrategyMoveGhost
 {
-    // Start is called before the first frame update
-    void Start()
+    public IPosition ChooseTargetTile(PhantomEntity phantom, IPosition pmPos, IPosition pmDir)
     {
-        
+        return phantom.Position;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Move(PhantomEntity phantom, PacmanEntity pacman, float deltaTime)
     {
-        
     }
 }

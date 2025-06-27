@@ -22,7 +22,7 @@ public class MoveChase : IStrategyMoveGhost
         }
     }
 
-    public void Move(PhantomEntity ghost, PacmanEntity pacman, ISubjectGame game, float deltaTime)
+    public void Move(PhantomEntity ghost, PacmanEntity pacman, float deltaTime)
     {
         // 1. Calcular el "target tile" (posición objetivo) según el tipo de fantasma
         IPosition targetTile = ChooseTargetTile(ghost, pacman.Position, pacman.Direction);

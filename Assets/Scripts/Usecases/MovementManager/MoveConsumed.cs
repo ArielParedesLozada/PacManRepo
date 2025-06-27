@@ -1,20 +1,13 @@
 public class MoveConsumed : IStrategyMoveGhost
 {
-    private readonly IPosition _phantomHome;
-
-    public MoveConsumed(IPosition homePosition)
-    {
-        _phantomHome = homePosition;
-    }
-
-    public void Move(PhantomEntity ghost, PacmanEntity pacman, ISubjectGame game, float deltaTime)
+    public void Move(PhantomEntity ghost, PacmanEntity pacman, float deltaTime)
     {
         // Si ya está en la casa, cambia a Scatter y detente
-        if (ghost.Position.DistanceTo(_phantomHome) < 0.1f)
+        if (ghost.Position.DistanceTo(ghost.HomeNode.Position) < 0.1f)
         {
             ghost.State = GhostState.Scatter;
             ghost.Direction = null;
-            ghost.CurrentNode = game.GetNodeAt(_phantomHome); // Opcional: asegúrate de que esté en el nodo correcto
+            ghost.CurrentNode = ghost.HomeNode; // Opcional: asegúrate de que esté en el nodo correcto
             return;
         }
 
@@ -34,7 +27,7 @@ public class MoveConsumed : IStrategyMoveGhost
                 if (ghost.Direction != null && direction.Multiply(-1).Equals(ghost.Direction))
                     continue;
 
-                float dist = neighbor.Position.DistanceTo(_phantomHome);
+                float dist = neighbor.Position.DistanceTo(ghost.HomeNode.Position);
                 if (dist < bestDist)
                 {
                     bestDist = dist;
@@ -69,7 +62,7 @@ public class MoveConsumed : IStrategyMoveGhost
 
     public IPosition ChooseTargetTile(PhantomEntity phantom, IPosition pmPos, IPosition pmDir)
     {
-        return _phantomHome;
+        return phantom.HomeNode.Position;
     }
 
     public IPosition CanMove(PhantomEntity g, IPosition dir, IPosition targetPosition)

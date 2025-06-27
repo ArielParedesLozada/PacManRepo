@@ -61,4 +61,9 @@ public class Position : IPosition
         return (_inner - new Vector2(other.X, other.Y)).magnitude;
     }
 
+    public IPosition Zero()
+    {
+        return new Position(0, 0);
+    }
+
 }

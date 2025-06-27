@@ -1,20 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class CollisionActive : MonoBehaviour
+public class CollisionActive : IStrategyGhostCollision
 {
-    private PacmanEntity _pacMan;
-    private ISubjectGame _gameBoard;
-    public CollisionActive(PacmanEntity pacman, ISubjectGame gameboard)
+    public void Collide(PhantomEntity phantom, PacmanEntity pacman, ISubjectGame game)
     {
-        _pacMan = pacman;
-        _gameBoard = gameboard;
+        phantom.Deactivate();
+        pacman.Die();
+        game.Notify();
     }
-    public void Collide(PhantomEntity phantom)
-    {
-        _pacMan.Die();
-        _gameBoard.Notify();
-    }
-
 }
