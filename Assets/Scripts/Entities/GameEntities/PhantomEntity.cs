@@ -21,13 +21,22 @@ public class PhantomEntity
 
     public void Revive()
     {
-        State = GhostState.Scatter;
         Direction = Direction.Zero().Add(new Position(0, 1));
+        State = GhostState.Scatter;
     }
 
     public void Deactivate()
     {
         State = GhostState.Still;
         Direction = Direction.Zero();
+    }
+    public void Activate()
+    {
+        State = GhostState.Scatter;
+    }
+
+    public void Scare()
+    {
+        State = GhostState.Frightened;
     }
 }

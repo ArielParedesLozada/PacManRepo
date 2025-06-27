@@ -1,0 +1,64 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(AudioSource), typeof(Animator), typeof(SpriteRenderer))]
+public class PlayMovement : MonoBehaviour
+{
+    [Header("Chomp SFX")]
+    public AudioClip chomp1;
+    public AudioClip chomp2;
+
+    [Header("Animations")]
+    public RuntimeAnimatorController chompAnimation;
+    public RuntimeAnimatorController deathAnimation;
+
+    [Header("Idle Sprite")]
+    public Sprite idleSprite;
+
+    [Header("Movement (speed config only)")]
+    public float speed = 6f;
+
+    [HideInInspector]
+    public Vector2 orientation = Vector2.left;
+    bool _playedChomp1 = false;
+    public PacmanManager _manager;
+    AudioSource _audio;
+    Animator _anim;
+    SpriteRenderer _sprite;
+    Vector3 _startLocalPos;
+
+    void Awake()
+    {
+        _audio = GetComponent<AudioSource>();
+        _anim = GetComponent<Animator>();
+        _sprite = GetComponent<SpriteRenderer>();
+        _startLocalPos = transform.localPosition;
+    }
+    public void Chomp()
+    {
+        if (_anim.runtimeAnimatorController != chompAnimation)
+        {
+            _anim.runtimeAnimatorController = chompAnimation;
+        }
+
+        if (!_anim.enabled)
+            _anim.enabled = true;
+
+        var clip = _playedChomp1 ? chomp2 : chomp1;
+        _playedChomp1 = !_playedChomp1;
+        _audio.PlayOneShot(clip);
+    }
+    public void ShowMoving()
+    {
+        if (_anim.runtimeAnimatorController != chompAnimation)
+        {
+            _anim.runtimeAnimatorController = chompAnimation;
+        }
+
+        if (!_anim.enabled)
+        {
+            _anim.enabled = true;
+        }
+    }
+}

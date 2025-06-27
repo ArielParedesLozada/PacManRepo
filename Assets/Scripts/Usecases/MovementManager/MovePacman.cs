@@ -1,24 +1,22 @@
 public class MovePacman
 {
-    private ISubjectGame _gameBoard;
     private readonly PacmanEntity _pacman;
-    public MovePacman(ISubjectGame game, PacmanEntity pacman)
+    public MovePacman(PacmanEntity pacman)
     {
-        _gameBoard = game;
         _pacman = pacman;
     }
-    public void Execute(float deltaTime)
+    public void Move(float deltaTime)
     {
         if (_pacman.PacManState == PacManState.Dead)
             return;
 
         // 1. Intentar cambio de dirección anticipado
-        if (!_pacman.Direction.Equals(_pacman.Direction))
+        if (!_pacman.NextDirection.Equals(_pacman.Direction))
         {
-            var possible = CanMove(_pacman.CurrentNode, _pacman.Direction);
+            var possible = CanMove(_pacman.CurrentNode, _pacman.NextDirection);
             if (possible != null)
             {
-                _pacman.Direction = _pacman.Direction;
+                _pacman.Direction = _pacman.NextDirection;
                 _pacman.TargetNode = possible;
                 _pacman.CurrentNode = null;
             }

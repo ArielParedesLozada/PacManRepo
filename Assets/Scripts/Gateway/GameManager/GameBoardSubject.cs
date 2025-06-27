@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class GameBoardSubject : MonoBehaviour
+public class GameBoardSubject : ISubjectGame
 {
-    // Start is called before the first frame update
-    void Start()
+    private GameTilesManager _tiles;
+    private GameGhostManager _ghostManager;
+    private NodeEntity[] _nodes;
+    public int Score { get; set; }
+    public int Level { get; set; }
+    public int Lives { get; set; }
+    public NodeEntity GetNodeAt(IPosition position)
     {
-        
+        for (int i = 0; i < _nodes.Length; i++)
+        {
+            if (_nodes[i].Position.Equals(position))
+            {
+                return _nodes[i];
+            }
+        }
+        return null;
     }
 
-    // Update is called once per frame
-    void Update()
+    public TileEntity GetTileAt(IPosition position)
     {
-        
+        return _tiles.GetTileAt(position);
+    }
+
+    public void Notify()
+    {
+        _ghostManager.Notify();
     }
 }

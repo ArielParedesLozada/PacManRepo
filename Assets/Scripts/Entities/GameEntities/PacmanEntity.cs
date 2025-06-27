@@ -1,11 +1,12 @@
 using System;
 
-public enum PacManState { Alive, Dead, Still, Empowered,}
+public enum PacManState { Alive, Dead, Still, Empowered, }
 public class PacmanEntity
 {
     public IPosition Size { get; set; } = null;
     public IPosition Position { get; set; }
     public IPosition Direction { get; set; }
+    public IPosition NextDirection { get; set; }
     public NodeEntity CurrentNode { get; set; }
     public NodeEntity TargetNode { get; set; }
     public PacManState PacManState { get; set; }

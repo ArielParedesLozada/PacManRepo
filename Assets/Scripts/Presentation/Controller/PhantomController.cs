@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IGamePelletManager : MonoBehaviour
+public class PhantomController : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
