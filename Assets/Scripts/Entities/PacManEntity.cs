@@ -13,13 +13,8 @@ public class PacManEntity
     public float Speed { get; set; }
     public bool CanMove { get; set; }
     public int Level { get; private set; } = 1;
-
     public Vector2 Size { get; set; } = new Vector2(1, 1);
-
     public Node StartingNode { get; private set; }
-
-
-
     public PacManEntity(Node startNode, float startSpeed)
     {
         CurrentNode = startNode;

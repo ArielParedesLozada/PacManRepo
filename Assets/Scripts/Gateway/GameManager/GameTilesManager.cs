@@ -1,7 +1,10 @@
 public class GameTilesManager
 {
     private TileEntity[] _tiles;
-
+    public void Initialize(TileEntity[] tiles)
+    {
+        _tiles = tiles;
+    }
     public TileEntity GetTileAt(IPosition position)
     {
         for (int i = 0; i < _tiles.Length; i++)

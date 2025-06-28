@@ -15,12 +15,24 @@ public class PacmanManager : MonoBehaviour
             return _pacman;
         }
     }
-    private bool _isReady;
-
+    private bool _isReady = true;
+    public void Initialize(
+        PacmanEntity pacman,
+        MovePacman movePacman,
+        ISubjectGame gameBoard,
+        IStrategyConsume consumeStrategy)
+    {
+        _pacman = pacman;
+        _movePacman = movePacman;
+        _game = gameBoard;
+        _consume = consumeStrategy;
+        _isReady = true;
+    }
     void Update()
     {
         if (!_isReady || _pacman == null || _pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
         {
+            Debug.Log("PacmanManager Error");
             return;
         }
         IPosition nextDirection = new Position(0, 0);
@@ -43,6 +55,7 @@ public class PacmanManager : MonoBehaviour
             nextDirection = new Position(0, -1);
         }
         _pacman.NextDirection = nextDirection;
+        Debug.Log($"SIGMA: {_pacman.Direction.ToString()}");
         _movePacman.Move(1f);
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
         _consume.Consume(_pacman, currentTile);
