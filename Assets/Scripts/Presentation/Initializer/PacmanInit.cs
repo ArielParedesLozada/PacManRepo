@@ -28,5 +28,6 @@ public class PacmanInit : MonoBehaviour
         pacmanEntity.SetSpeed(1);
         movePacman = new MovePacman(pacmanEntity);
         Debug.Log("✅ PacmanInit construyó correctamente PacmanEntity y MovePacman.");
+        Debug.Log($"Pacman inicia en nodo {pacmanEntity.CurrentNode}");
     }
 }

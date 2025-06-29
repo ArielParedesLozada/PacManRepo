@@ -37,24 +37,37 @@ public class PacmanManager : IInitializable, ITickable
 
         IPosition nextDirection = new Position(0, 0);
 
-        if (Input.GetKeyDown(KeyCode.RightArrow)) nextDirection = new Position(1, 0);
-        else if (Input.GetKeyDown(KeyCode.LeftArrow)) nextDirection = new Position(-1, 0);
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) nextDirection = new Position(0, 1);
-        else if (Input.GetKeyDown(KeyCode.DownArrow)) nextDirection = new Position(0, -1);
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            nextDirection = new Position(1, 0);
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            nextDirection = new Position(-1, 0);
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            nextDirection = new Position(0, 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            nextDirection = new Position(0, -1);
+        }
 
         _pacman.NextDirection = nextDirection;
         _movePacman.Move(Time.deltaTime);
-        Debug.Log($"Ya se updatea: {_pacman.Position.ToString()}");
-
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
-        _consume.Consume(_pacman, currentTile);
+        if (_consume.Consume(_pacman, currentTile))
+        {
+            Debug.Log($"juego {_game.Score}");
+        }
         if (currentTile != null)
         {
-            Debug.Log($"{currentTile.Position.ToString()}");
+            Debug.Log($"Skibidi Tile no nula {currentTile.Position.ToString()}");
         }
         else
         {
-            Debug.Log("Skibidi Waza sigma");
+            Debug.Log($"Skibidi Tile nula {_pacman.Position.ToString()}");
         }
 
         _transform.position = new Vector3(_pacman.Position.X, _pacman.Position.Y, 0);

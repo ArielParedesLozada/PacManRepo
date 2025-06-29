@@ -31,6 +31,11 @@ public class Position : IPosition
         return new Position(_inner * scalar);
     }
 
+    public float Dot(IPosition other)
+    {
+        return this.X * other.X + this.Y * other.Y;
+    }
+
     public float SqrMagnitude()
     {
         return _inner.sqrMagnitude;
@@ -45,7 +50,6 @@ public class Position : IPosition
     {
         return Mathf.Approximately(X, other.X) && Mathf.Approximately(Y, other.Y);
     }
-
     public override string ToString()
     {
         return _inner.ToString();
