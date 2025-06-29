@@ -1,41 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NodeInit : MonoBehaviour
 {
     public NodeEntity[] Initialize()
     {
-        NodeController[] nodeControllers = FindObjectsOfType<NodeController>();
+        var nodeControllers = GameObject.FindObjectsOfType<NodeController>();
 
-        Dictionary<NodeController, NodeEntity> map = new();
-        List<NodeEntity> nodeEntities = new();
-
-        // 1. Crear entidades base sin vecinos
+        // 1. Crear NodeEntity base
         foreach (var ctrl in nodeControllers)
         {
-            var pos = new Position(ctrl.transform.position);
-            var entity = new NodeEntity(pos, new NodeEntity[0]);
-            map[ctrl] = entity;
-            nodeEntities.Add(entity);
-        }
-
-        // 2. Asignar vecinos (usando los controladores para acceder a sus vecinos visuales)
-        foreach (var ctrl in nodeControllers)
-        {
-            NodeEntity[] neighbors = new NodeEntity[ctrl.neighborControllers.Length];
-
-            for (int i = 0; i < ctrl.neighborControllers.Length; i++)
+            if (ctrl == null)
             {
-                neighbors[i] = map[ctrl.neighborControllers[i]];
+                Debug.LogError("❌ Un NodeController es null.");
+                continue;
             }
 
-            // Crear una nueva entidad con vecinos ahora sí
-            IPosition pos = new Position(ctrl.transform.position);
-            NodeEntity fullEntity = new NodeEntity(pos, neighbors);
-            map[ctrl] = fullEntity;
+            if (ctrl.Position == null)
+            {
+                Debug.LogError($"❌ {ctrl.name} tiene Position null.");
+                continue;
+            }
+
+            int neighborCount = ctrl.neighborControllers != null ? ctrl.neighborControllers.Length : 0;
+            ctrl.NodeEntity = new NodeEntity(ctrl.Position, neighborCount);
         }
 
-        return nodeEntities.ToArray();
+        // 2. Asignar vecinos y direcciones
+        foreach (var ctrl in nodeControllers)
+        {
+            if (ctrl.NodeEntity == null)
+            {
+                Debug.LogError($"❌ {ctrl.name}: NodeEntity no fue inicializado.");
+                continue;
+            }
+
+            int neighborCount = ctrl.neighborControllers != null ? ctrl.neighborControllers.Length : 0;
+            var neighbors = new NodeEntity[neighborCount];
+
+            for (int i = 0; i < neighborCount; i++)
+            {
+                var neighborCtrl = ctrl.neighborControllers[i];
+
+                if (neighborCtrl == null)
+                {
+                    Debug.LogWarning($"⚠️ {ctrl.name}: neighborControllers[{i}] es null.");
+                    continue;
+                }
+
+                if (neighborCtrl.NodeEntity == null)
+                {
+                    Debug.LogWarning($"⚠️ {ctrl.name}: NodeEntity del vecino {neighborCtrl.name} es null.");
+                    continue;
+                }
+
+                neighbors[i] = neighborCtrl.NodeEntity;
+            }
+
+            ctrl.NodeEntity.SetNeighborsAndDirections(neighbors);
+        }
+
+        return nodeControllers.Select(c => c.NodeEntity).ToArray();
     }
 }

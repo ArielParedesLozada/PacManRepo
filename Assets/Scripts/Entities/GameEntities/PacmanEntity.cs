@@ -19,7 +19,7 @@ public class PacmanEntity
         Direction = new Position(0, 0);
         Speed = startSpeed;
         Size = size ?? new Position(1, 1);
-        PacManState = PacManState.Still;
+        PacManState = PacManState.Alive;
     }
 
     public void SetSpeed(int level)

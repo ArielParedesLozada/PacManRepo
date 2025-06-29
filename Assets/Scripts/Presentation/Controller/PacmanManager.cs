@@ -22,17 +22,27 @@ public class PacmanManager : MonoBehaviour
         ISubjectGame gameBoard,
         IStrategyConsume consumeStrategy)
     {
+        Debug.Log("PacmanManager initialized llamado desde PacmanManager");
         _pacman = pacman;
         _movePacman = movePacman;
         _game = gameBoard;
         _consume = consumeStrategy;
         _isReady = true;
+        enabled = true;
+    }
+    void Awake()
+    {
+        enabled = false; // Desactiva el Update hasta que esté listo
     }
     void Update()
     {
+        Debug.Log("Entrando a PacmanManager.Update()");
         if (!_isReady || _pacman == null || _pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
         {
-            Debug.Log("PacmanManager Error");
+            Debug.LogWarning($"PacmanManager Error - " +
+                         $"_isReady: {_isReady}, " +
+                         $"_pacman is null: {_pacman == null}, " +
+                         $"PacmanState: {_pacman?.PacManState}");
             return;
         }
         IPosition nextDirection = new Position(0, 0);
