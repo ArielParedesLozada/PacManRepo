@@ -8,8 +8,29 @@ public class PhantomInit : MonoBehaviour
     public GameGhostManager InitializeGhosts(PacmanEntity pacman)
     {
         PhantomController[] ghostControllers = FindObjectsOfType<PhantomController>();
-        PhantomEntity[] ghostEntities = ghostControllers.Select(gc => gc.ToEntity()).ToArray();
+        List<PhantomEntity> ghostEntities = new List<PhantomEntity>();
 
-        return new GameGhostManager(pacman, ghostEntities);
+        foreach (var gc in ghostControllers)
+        {
+            if (gc == null)
+            {
+                Debug.LogWarning("⚠️ PhantomController es null.");
+                continue;
+            }
+
+            var entity = gc.ToEntity();
+
+            if (entity == null)
+            {
+                Debug.LogError($"❌ PhantomEntity generado por {gc.gameObject.name} es null.");
+                continue;
+            }
+
+            ghostEntities.Add(entity);
+        }
+
+        Debug.Log($"👻 Fantasmas inicializados correctamente: {ghostEntities.Count}");
+
+        return new GameGhostManager(pacman, ghostEntities.ToArray());
     }
 }

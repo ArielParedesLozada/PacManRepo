@@ -9,34 +9,33 @@ public class GameGhostManager
     }
     public void Notify()
     {
-        switch (_pacman.PacManState)
+        if (_ghosts == null)
         {
-            case PacManState.Dead:
-                foreach (PhantomEntity ghost in _ghosts)
-                {
+            return;
+        }
+        foreach (PhantomEntity ghost in _ghosts)
+        {
+            if (ghost == null)
+            {
+                continue;
+            }
+            switch (_pacman.PacManState)
+            {
+                case PacManState.Dead:
                     ghost.Deactivate();
-                }
-                break;
-            case PacManState.Still:
-                foreach (PhantomEntity ghost in _ghosts)
-                {
+                    break;
+                case PacManState.Still:
                     ghost.Deactivate();
-                }
-                break;
-            case PacManState.Empowered:
-                foreach (PhantomEntity ghost in _ghosts)
-                {
+                    break;
+                case PacManState.Empowered:
                     ghost.Scare();
-                }
-                break;
-            case PacManState.Alive:
-                foreach (PhantomEntity ghost in _ghosts)
-                {
+                    break;
+                case PacManState.Alive:
                     ghost.Activate();
-                }
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

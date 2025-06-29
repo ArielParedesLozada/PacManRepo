@@ -13,6 +13,7 @@ public class PhantomEntity
     public float Speed { get; set; }
     public GhostState State { get; set; }
     public GhostName Name { get; set; }
+    public string DebugName { get; set; }
 
     public void Die()
     {

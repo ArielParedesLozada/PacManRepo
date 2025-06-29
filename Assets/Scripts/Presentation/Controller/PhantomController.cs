@@ -19,6 +19,7 @@ public class PhantomController : MonoBehaviour
         _moveGhost = moveGhost;
         _pacman = pacman;
         _gameBoard = gameBoard;
+        _ghost.DebugName = name;
     }
 
     void Update()
@@ -37,5 +38,32 @@ public class PhantomController : MonoBehaviour
         transform.position = new Vector3(_ghost.Position.X, _ghost.Position.Y, 0);
     }
 
-    public PhantomEntity ToEntity() => _ghost;
+    public PhantomEntity ToEntity()
+    {
+        GhostName nombre = GhostName.Red;
+        nombre = name switch
+        {
+            "Ghost_Blinky" => GhostName.Red,
+            "Ghost_Pinky" => GhostName.Pink,
+            "Ghost_Inky" => GhostName.Blue,
+            _ => GhostName.Red,
+        };
+
+        if (_ghost == null)
+        {
+            // Crear entidad básica con valores por defecto
+            var pos = new Position(transform.position.x, transform.position.y);
+            _ghost = new PhantomEntity
+            {
+                Position = pos,
+                Size = new Position(1, 1), // o el tamaño que manejes
+                Direction = new Position(1, 0),
+                State = GhostState.Still,
+                Name = nombre, // O puedes hacerlo configurable por inspector
+                DebugName = name
+            };
+        }
+
+        return _ghost;
+    }
 }
