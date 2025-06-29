@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class MovePacman
 {
     private readonly PacmanEntity _pacman;
@@ -7,6 +9,8 @@ public class MovePacman
     }
     public void Move(float deltaTime)
     {
+        if (_pacman.CurrentNode == null && _pacman.TargetNode == null)
+            Debug.LogWarning("❗ PacMan sin nodo actual ni objetivo");
         if (_pacman.PacManState == PacManState.Dead)
             return;
 

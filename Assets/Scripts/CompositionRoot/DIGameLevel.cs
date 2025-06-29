@@ -14,40 +14,54 @@ public class DIGameLevel : MonoInstaller
     public override void InstallBindings()
     {
         Debug.Log("🛠️ DIGameLevel.InstallBindings iniciado");
+
+        // --- 1. Nodos
         var nodeEntities = nodeInit.Initialize();
-        Debug.Log("NodeEntities inicializadas");
-        // --- 1. Inicializar Tiles
+        Debug.Log($"📍 NodeEntities inicializados: {nodeEntities.Length}");
+
+        // --- 2. Tiles
         var tilesManager = tileInit.Initialize();
         Debug.Log("✅ TilesManager inicializado");
         Container.Bind<GameTilesManager>().FromInstance(tilesManager).AsSingle();
 
-        // --- 2. Inicializar Pacman
+        // --- 3. Pac-Man
         if (pacmanInit == null)
         {
-            Debug.LogError("❌ PacmanInit no está asignado en DIGameLevel.");
+            Debug.LogError("❌ PacmanInit no está asignado.");
             return;
         }
 
         pacmanInit.Initialize();
-        var pacmanManager = pacmanInit.pacmanManager;
-        var pacmanEntity = pacmanManager?.PacMan;
-
-        if (pacmanEntity == null)
+        var pacmanEntity = pacmanInit.pacmanEntity;
+        var movePacman = pacmanInit.movePacman;
+        if (pacmanEntity == null || movePacman == null)
         {
-            Debug.LogError("❌ PacmanEntity no fue creado correctamente.");
+            Debug.LogError("❌ PacmanEntity o MovePacman no fue creado correctamente.");
             return;
         }
 
-        Debug.Log("✅ PacmanEntity y PacmanManager inicializados");
-        Container.Bind<PacmanEntity>().FromInstance(pacmanEntity).AsSingle();
-        Container.Bind<PacmanManager>().FromInstance(pacmanManager).AsSingle();
+        Debug.Log("✅ PacmanEntity y MovePacman inicializados");
 
-        // --- 3. Inicializar Fantasmas
+        // Transform de PacMan (usamos el tag "PacMan")
+        GameObject pacmanGO = GameObject.FindWithTag("PacMan");
+        if (pacmanGO == null)
+        {
+            Debug.LogError("❌ GameObject con tag 'PacMan' no encontrado.");
+            return;
+        }
+        Transform pacmanTransform = pacmanGO.transform;
+        Container.Bind<Transform>().WithId("PacManTransform").FromInstance(pacmanTransform).AsSingle();
+
+        // Bindeos necesarios para PacmanManager
+        Container.Bind<PacmanEntity>().FromInstance(pacmanEntity).AsSingle();
+        Container.Bind<MovePacman>().FromInstance(movePacman).AsSingle();
+
+        // --- 4. Fantasmas
         var ghostManager = phantomInit.InitializeGhosts(pacmanEntity);
         Debug.Log("👻 GhostManager inicializado");
         Container.Bind<GameGhostManager>().FromInstance(ghostManager).AsSingle();
 
-        // --- 4. Inicializar GameBoard (y nodos automáticamente si no están)
+        // --- 5. GameBoardInit
         gameBoardInit.tilesManager = tilesManager;
         gameBoardInit.ghostManager = ghostManager;
 
@@ -65,20 +79,30 @@ public class DIGameLevel : MonoInstaller
             Debug.Log($"📍 Nodos detectados automáticamente: {gameBoardInit.nodes.Length}");
         }
 
+        // Inicializar GameBoard
         gameBoardInit.Initialize(tilesManager, ghostManager);
-
         var gameBoardSubject = gameBoardInit._gameBoardSubject;
+
         if (gameBoardSubject == null)
         {
-            Debug.LogError("❌ GameBoardSubject no fue creado en GameBoardInit.");
+            Debug.LogError("❌ GameBoardSubject no fue creado correctamente.");
             return;
         }
 
         Debug.Log("✅ GameBoardSubject inicializado");
         Container.Bind<GameBoardSubject>().FromInstance(gameBoardSubject).AsSingle();
+        Container.Bind<ISubjectGame>().FromInstance(gameBoardSubject).AsSingle(); // importante para lógica
 
-        // Vincular PacmanInit si necesitas inyectarlo en GameInit u otros lugares
+        // --- 6. Lógica de consumo
+        Container.Bind<IStrategyConsume>().To<ConsumePellet>().AsSingle()
+                .WithArguments(Container.Resolve<ISubjectGame>());
+
+        // --- 7. Vincular PacmanManager (lógica pura, sin MonoBehaviour)
+        Container.BindInterfacesTo<PacmanManager>().AsSingle();
+
+        // --- 8. Otros (opcional)
         Container.Bind<PacmanInit>().FromInstance(pacmanInit).AsSingle();
+        Container.Bind<PhantomInit>().FromInstance(phantomInit).AsSingle();
 
         Debug.Log("🏁 DIGameLevel.InstallBindings finalizado correctamente");
     }

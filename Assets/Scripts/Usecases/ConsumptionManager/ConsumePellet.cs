@@ -8,6 +8,10 @@ public class ConsumePellet : IStrategyConsume
     }
     public bool Consume(PacmanEntity pacman, TileEntity tile)
     {
+        if (tile == null)
+        {
+            return false;
+        }
         if (tile.IsEmpty || tile.IsPortal)
         {
             return false;
