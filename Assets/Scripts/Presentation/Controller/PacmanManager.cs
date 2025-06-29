@@ -34,29 +34,26 @@ public class PacmanManager : IInitializable, ITickable
     {
         if (_pacman == null || _pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
             return;
-
-        IPosition nextDirection = new Position(0, 0);
-
+        _pacman.NextDirection = new Position(0, 0);
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            nextDirection = new Position(1, 0);
+            _pacman.NextDirection = new Position(1, 0);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            nextDirection = new Position(-1, 0);
+            _pacman.NextDirection = new Position(-1, 0);
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            nextDirection = new Position(0, 1);
+            _pacman.NextDirection = new Position(0, 1);
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            nextDirection = new Position(0, -1);
+            _pacman.NextDirection = new Position(0, -1);
         }
-
-        _pacman.NextDirection = nextDirection;
         _movePacman.Move(Time.deltaTime);
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
+        if (_pacman.CurrentNode != null) Debug.Log($"Mi nod es {_pacman.CurrentNode.Position.ToString()}");
         if (_consume.Consume(_pacman, currentTile))
         {
             Debug.Log($"juego {_game.Score}");

@@ -9,6 +9,7 @@ public class PacmanEntity
     public IPosition NextDirection { get; set; }
     public NodeEntity CurrentNode { get; set; }
     public NodeEntity TargetNode { get; set; }
+    public NodeEntity PreviousNode { get; set; }
     public PacManState PacManState { get; set; }
     public float Speed { get; private set; }
 

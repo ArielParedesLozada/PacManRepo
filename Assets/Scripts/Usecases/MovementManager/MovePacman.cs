@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class MovePacman
 {
     private readonly PacmanEntity _pacman;
@@ -12,10 +10,7 @@ public class MovePacman
     public void Move(float deltaTime)
     {
         if (_pacman.CurrentNode == null && _pacman.TargetNode == null)
-        {
-            Debug.LogWarning("❗ PacMan sin nodo actual ni objetivo");
             return;
-        }
 
         if (_pacman.PacManState == PacManState.Dead)
             return;
@@ -28,6 +23,7 @@ public class MovePacman
             {
                 _pacman.Direction = _pacman.NextDirection;
                 _pacman.TargetNode = possible;
+                _pacman.PreviousNode = _pacman.CurrentNode;
                 _pacman.CurrentNode = null;
             }
         }
@@ -40,31 +36,32 @@ public class MovePacman
             if (HasOverShotTarget(_pacman))
             {
                 _pacman.CurrentNode = _pacman.TargetNode;
-
-                // Colocar posición exacta
                 _pacman.Position = _pacman.CurrentNode.Position;
 
-                // Buscar siguiente nodo
+                // 3. Buscar siguiente nodo en la misma dirección
                 var next = CanMove(_pacman.CurrentNode, _pacman.Direction);
                 if (next != null)
                 {
+                    _pacman.PreviousNode = _pacman.CurrentNode;
                     _pacman.TargetNode = next;
                     _pacman.CurrentNode = null;
                 }
                 else
                 {
+                    // 4. Detener movimiento (llegó a una pared)
                     _pacman.Direction = new Position(0, 0);
                     _pacman.TargetNode = null;
                 }
             }
         }
 
-        // 5. Si no tiene TargetNode, intenta seguir
+        // 5. Si no tiene TargetNode, intenta seguir en la misma dirección
         if (_pacman.TargetNode == null && _pacman.CurrentNode != null && !_pacman.Direction.Equals(new Position(0, 0)))
         {
             var fallback = CanMove(_pacman.CurrentNode, _pacman.Direction);
             if (fallback != null)
             {
+                _pacman.PreviousNode = _pacman.CurrentNode;
                 _pacman.TargetNode = fallback;
                 _pacman.CurrentNode = null;
             }
@@ -84,17 +81,14 @@ public class MovePacman
         return null;
     }
 
-    /// ✅ Versión robusta que detecta si se pasó del nodo destino
     private bool HasOverShotTarget(PacmanEntity pacman)
     {
-        if (pacman.TargetNode == null || pacman.CurrentNode == null)
-            return true; // ⚠️ Considerar "overshot" si no hay nodo inicial
+        if (pacman.TargetNode == null || pacman.PreviousNode == null)
+            return false;
 
-        var fromCurrentToTarget = pacman.TargetNode.Position.Subtract(pacman.CurrentNode.Position);
-        var fromCurrentToNow = pacman.Position.Subtract(pacman.CurrentNode.Position);
+        var fromPrevToTarget = pacman.TargetNode.Position.Subtract(pacman.PreviousNode.Position);
+        var fromPrevToNow = pacman.Position.Subtract(pacman.PreviousNode.Position);
 
-        float dot = fromCurrentToNow.Dot(fromCurrentToTarget);
-
-        return dot > fromCurrentToTarget.Dot(fromCurrentToTarget);
+        return fromPrevToNow.SqrMagnitude() >= fromPrevToTarget.SqrMagnitude() - 0.01f;
     }
 }
