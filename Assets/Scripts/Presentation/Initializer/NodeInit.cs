@@ -24,6 +24,7 @@ public class NodeInit : MonoBehaviour
 
             int neighborCount = ctrl.neighborControllers != null ? ctrl.neighborControllers.Length : 0;
             ctrl.NodeEntity = new NodeEntity(ctrl.Position, neighborCount);
+            ctrl.NodeEntity.DebugName = ctrl.name;
         }
 
         // 2. Asignar vecinos y direcciones

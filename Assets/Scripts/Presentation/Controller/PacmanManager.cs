@@ -35,38 +35,30 @@ public class PacmanManager : IInitializable, ITickable
         if (_pacman == null || _pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
             return;
         _pacman.NextDirection = new Position(0, 0);
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow))
         {
             _pacman.NextDirection = new Position(1, 0);
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             _pacman.NextDirection = new Position(-1, 0);
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Input.GetKey(KeyCode.UpArrow))
         {
             _pacman.NextDirection = new Position(0, 1);
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
             _pacman.NextDirection = new Position(0, -1);
         }
         _movePacman.Move(Time.deltaTime);
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
-        if (_pacman.CurrentNode != null) Debug.Log($"Mi nod es {_pacman.CurrentNode.Position.ToString()}");
+        if (_pacman.CurrentNode != null) Debug.Log($"Estoy en la {_pacman.CurrentNode.DebugName}");
+        if (_pacman.TargetNode != null) Debug.Log($"Me dirijo a la {_pacman.TargetNode.DebugName}");
         if (_consume.Consume(_pacman, currentTile))
         {
             Debug.Log($"juego {_game.Score}");
         }
-        if (currentTile != null)
-        {
-            Debug.Log($"Skibidi Tile no nula {currentTile.Position.ToString()}");
-        }
-        else
-        {
-            Debug.Log($"Skibidi Tile nula {_pacman.Position.ToString()}");
-        }
-
         _transform.position = new Vector3(_pacman.Position.X, _pacman.Position.Y, 0);
     }
 }

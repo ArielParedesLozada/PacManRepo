@@ -4,9 +4,7 @@ public class NodeController : MonoBehaviour
 {
     [Tooltip("Vecinos visibles en Unity")]
     public NodeController[] neighborControllers;
-
     public NodeEntity NodeEntity { get; set; }
-
     private IPosition _position;
     public IPosition Position
     {

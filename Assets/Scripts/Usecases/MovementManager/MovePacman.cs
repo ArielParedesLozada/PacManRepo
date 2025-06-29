@@ -9,62 +9,86 @@ public class MovePacman
 
     public void Move(float deltaTime)
     {
-        if (_pacman.CurrentNode == null && _pacman.TargetNode == null)
-            return;
-
         if (_pacman.PacManState == PacManState.Dead)
             return;
 
-        // 1. Intentar cambio de dirección anticipado
-        if (!_pacman.NextDirection.Equals(_pacman.Direction))
+        // Movimiento entre nodos (incluye reversa)
+        if (_pacman.TargetNode != null && _pacman.PreviousNode != null)
         {
-            var possible = CanMove(_pacman.CurrentNode, _pacman.NextDirection);
-            if (possible != null)
+            // Permitir reversa en medio del camino
+            var reverse = _pacman.Direction.Multiply(-1);
+            if (_pacman.NextDirection.Equals(reverse))
             {
-                _pacman.Direction = _pacman.NextDirection;
-                _pacman.TargetNode = possible;
-                _pacman.PreviousNode = _pacman.CurrentNode;
-                _pacman.CurrentNode = null;
+                if (CanMove(_pacman.TargetNode, reverse) == _pacman.PreviousNode)
+                {
+                    var temp = _pacman.PreviousNode;
+                    _pacman.PreviousNode = _pacman.TargetNode;
+                    _pacman.TargetNode = temp;
+                    _pacman.Direction = reverse;
+                }
             }
-        }
 
-        // 2. Avanzar nodo a nodo
-        if (_pacman.TargetNode != null && _pacman.CurrentNode != _pacman.TargetNode)
-        {
+            // Movimiento normal
             _pacman.Position = _pacman.Position.Add(_pacman.Direction.Multiply(_pacman.Speed * deltaTime));
-
             if (HasOverShotTarget(_pacman))
             {
+                // Llega al nodo objetivo
+                _pacman.Position = _pacman.TargetNode.Position;
                 _pacman.CurrentNode = _pacman.TargetNode;
-                _pacman.Position = _pacman.CurrentNode.Position;
-
-                // 3. Buscar siguiente nodo en la misma dirección
-                var next = CanMove(_pacman.CurrentNode, _pacman.Direction);
-                if (next != null)
+                // --- Aquí va la lógica de decisión de dirección, igual que en MovePacManUseCase ---
+                var tryNext = CanMove(_pacman.CurrentNode, _pacman.NextDirection);
+                if (tryNext != null)
                 {
+                    _pacman.Direction = _pacman.NextDirection;
                     _pacman.PreviousNode = _pacman.CurrentNode;
-                    _pacman.TargetNode = next;
+                    _pacman.TargetNode = tryNext;
                     _pacman.CurrentNode = null;
                 }
                 else
                 {
-                    // 4. Detener movimiento (llegó a una pared)
-                    _pacman.Direction = new Position(0, 0);
-                    _pacman.TargetNode = null;
+                    var forward = CanMove(_pacman.CurrentNode, _pacman.Direction);
+                    if (forward != null)
+                    {
+                        _pacman.PreviousNode = _pacman.CurrentNode;
+                        _pacman.TargetNode = forward;
+                        _pacman.CurrentNode = null;
+                    }
+                    else
+                    {
+                        _pacman.Direction = new Position(0, 0);
+                        _pacman.TargetNode = null;
+                    }
                 }
+            }
+            else
+            {
+                return; // Aún en trayecto, no decidir
             }
         }
 
-        // 5. Si no tiene TargetNode, intenta seguir en la misma dirección
-        if (_pacman.TargetNode == null && _pacman.CurrentNode != null && !_pacman.Direction.Equals(new Position(0, 0)))
+        // Si está en un nodo y no tiene TargetNode, intentar iniciar movimiento
+        if (_pacman.CurrentNode != null && _pacman.TargetNode == null)
         {
-            var fallback = CanMove(_pacman.CurrentNode, _pacman.Direction);
-            if (fallback != null)
+            var tryNext = CanMove(_pacman.CurrentNode, _pacman.NextDirection);
+            if (tryNext != null)
+            {
+                _pacman.Direction = _pacman.NextDirection;
+                _pacman.PreviousNode = _pacman.CurrentNode;
+                _pacman.TargetNode = tryNext;
+                _pacman.CurrentNode = null;
+                return;
+            }
+
+            var forward = CanMove(_pacman.CurrentNode, _pacman.Direction);
+            if (forward != null)
             {
                 _pacman.PreviousNode = _pacman.CurrentNode;
-                _pacman.TargetNode = fallback;
+                _pacman.TargetNode = forward;
                 _pacman.CurrentNode = null;
+                return;
             }
+
+            _pacman.Direction = new Position(0, 0);
         }
     }
 
@@ -83,7 +107,7 @@ public class MovePacman
 
     private bool HasOverShotTarget(PacmanEntity pacman)
     {
-        if (pacman.TargetNode == null || pacman.PreviousNode == null)
+        if (pacman.PreviousNode == null || pacman.TargetNode == null)
             return false;
 
         var fromPrevToTarget = pacman.TargetNode.Position.Subtract(pacman.PreviousNode.Position);

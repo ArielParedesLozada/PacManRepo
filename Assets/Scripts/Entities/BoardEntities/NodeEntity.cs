@@ -2,8 +2,8 @@ public class NodeEntity
 {
     public NodeEntity[] Neighbors { get; private set; }
     public IPosition[] ValidDirections { get; private set; }
-
     public IPosition Position { get; }
+    public string DebugName { get; set; }
 
     public NodeEntity(IPosition position, int neighborCount)
     {
