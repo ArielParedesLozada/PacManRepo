@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public enum GhostState { Scatter, Chase, Frightened, Consumed, Still, }
@@ -23,8 +24,7 @@ public class PhantomEntity
         IPosition direction,
         GhostName name,
         NodeEntity current,
-        NodeEntity home,
-        float speed
+        NodeEntity home
     )
     {
         Position = position;
@@ -36,7 +36,11 @@ public class PhantomEntity
         PreviousNode = current;
         HomeNode = home;
         State = GhostState.Chase;
-        Speed = speed;
+    }
+
+    public void SetSpeed(int level)
+    {
+        Speed = Math.Clamp(5f + level, 6f, 12f);
     }
 
     public void Die()

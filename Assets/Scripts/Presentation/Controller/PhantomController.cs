@@ -65,7 +65,7 @@ public class PhantomController : MonoBehaviour
 
         if (_ghost == null)
         {
-            var speed = new LevelSetter().GetLevel();
+            var level = new LevelSetter().GetLevel();
             // Crear entidad básica con valores por defecto
             var pos = new Position(transform.position.x, transform.position.y);
             _ghost = new PhantomEntity
@@ -75,9 +75,9 @@ public class PhantomController : MonoBehaviour
                 new Position(0, 1),
                 nombre,// O puedes hacerlo configurable por inspector
                 _homeNode.NodeEntity,
-                _targetNode.NodeEntity,
-                speed
+                _targetNode.NodeEntity
             );
+            _ghost.SetSpeed(level);
             _ghost.DebugName = name;
         }
 
