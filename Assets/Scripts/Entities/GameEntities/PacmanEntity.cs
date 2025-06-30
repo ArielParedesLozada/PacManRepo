@@ -3,6 +3,7 @@ using System;
 public enum PacManState { Alive, Dead, Still, Empowered, }
 public class PacmanEntity
 {
+    private const float _timer = 7f;
     public IPosition Size { get; set; } = null;
     public IPosition Position { get; set; }
     public IPosition Direction { get; set; }
@@ -12,6 +13,7 @@ public class PacmanEntity
     public NodeEntity PreviousNode { get; set; }
     public PacManState PacManState { get; set; }
     public float Speed { get; private set; }
+    public float EmpoweredTimer { get; set; }
 
     public PacmanEntity(NodeEntity startNode, float startSpeed, IPosition size)
     {
@@ -37,5 +39,11 @@ public class PacmanEntity
     public void Empower()
     {
         PacManState = PacManState.Empowered;
+        EmpoweredTimer = _timer;
+    }
+
+    public void Depower()
+    {
+        PacManState = PacManState.Alive;
     }
 }

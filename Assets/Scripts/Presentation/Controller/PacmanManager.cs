@@ -52,9 +52,17 @@ public class PacmanManager : IInitializable, ITickable
             _pacman.NextDirection = new Position(0, -1);
         }
         _movePacman.Move(Time.deltaTime);
+        Debug.Log($"SOY EL PACMAN. MI ESTADO ES {_pacman.PacManState} Y ME DURA {_pacman.EmpoweredTimer}");
+        if (_pacman.PacManState == PacManState.Empowered)
+        {
+            _pacman.EmpoweredTimer -= Time.deltaTime;
+            if (_pacman.EmpoweredTimer <= 0)
+            {
+                _pacman.Depower();
+                _game.Notify();
+            }
+        }
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
-        // if (_pacman.CurrentNode != null) Debug.Log($"Estoy en la {_pacman.CurrentNode.DebugName}");
-        // if (_pacman.TargetNode != null) Debug.Log($"Me dirijo a la {_pacman.TargetNode.DebugName}");
         if (_consume.Consume(_pacman, currentTile))
         {
             // Debug.Log($"juego {_game.Score}");

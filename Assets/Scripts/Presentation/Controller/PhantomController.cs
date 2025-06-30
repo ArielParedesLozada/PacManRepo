@@ -39,12 +39,12 @@ public class PhantomController : MonoBehaviour
 
         if (_ghost.State == GhostState.Still)
             return;
-        Debug.Log($"DIGANOSTICO PAPU {_ghost.DebugName} : {_ghost.PrintSafe()}");
+        // Debug.Log($"DIGANOSTICO PAPU {_ghost.DebugName} : {_ghost.PrintSafe()}");
         var moveStrategy = _strategyFactory.GetStrategy(_ghost.State);
         var collisionStrategy = _collisionFactory.GetStrategy(_ghost.State);
         _moveContext.SetStrategy(moveStrategy);
         _collisionContext.SetStrategy(collisionStrategy);
-        Debug.Log($"TIPO DE MOVIMIENTO {moveStrategy.GetType().Name} SOY {_ghost.DebugName}");
+        // Debug.Log($"TIPO DE MOVIMIENTO {moveStrategy.GetType().Name} SOY {_ghost.DebugName}");
         _moveContext.Execute(_ghost, _pacman, Time.deltaTime);
         if (HasCollidedWithPacman())
         {
