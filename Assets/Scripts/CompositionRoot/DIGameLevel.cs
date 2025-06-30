@@ -97,7 +97,13 @@ public class DIGameLevel : MonoInstaller
         Container.Bind<IStrategyConsume>().To<ConsumePellet>().AsSingle()
                 .WithArguments(Container.Resolve<ISubjectGame>());
         // --- 7. Vincular PacmanManager (lógica pura, sin MonoBehaviour)
-        Container.BindInterfacesTo<PacmanManager>().AsSingle();
+        Container.BindInterfacesAndSelfTo<PacmanManager>().AsSingle();
+
+        #region ViewsPacman
+        Container.Bind<FacadePacmanView>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<PlayMovement>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<PlayDeath>().FromComponentInHierarchy().AsSingle();
+        #endregion
 
         // --- 8. Otros (opcional)
         Container.Bind<PacmanInit>().FromInstance(pacmanInit).AsSingle();

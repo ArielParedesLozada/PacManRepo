@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(AudioSource), typeof(Animator), typeof(SpriteRenderer))]
 public class PlayMovement : MonoBehaviour
@@ -11,23 +12,18 @@ public class PlayMovement : MonoBehaviour
 
     [Header("Animations")]
     public RuntimeAnimatorController chompAnimation;
-    public RuntimeAnimatorController deathAnimation;
 
     [Header("Idle Sprite")]
     public Sprite idleSprite;
 
-    [Header("Movement (speed config only)")]
-    public float speed = 6f;
-
     [HideInInspector]
     public Vector2 orientation = Vector2.left;
     bool _playedChomp1 = false;
-    public PacmanManager _manager;
+
     AudioSource _audio;
     Animator _anim;
     SpriteRenderer _sprite;
     Vector3 _startLocalPos;
-
     void Awake()
     {
         _audio = GetComponent<AudioSource>();
@@ -48,6 +44,17 @@ public class PlayMovement : MonoBehaviour
         var clip = _playedChomp1 ? chomp2 : chomp1;
         _playedChomp1 = !_playedChomp1;
         _audio.PlayOneShot(clip);
+    }
+    public void StopChomp()
+    {
+        if (_anim.enabled)
+        {
+            _anim.enabled = false;
+        }
+        if (_sprite != null && idleSprite != null)
+        {
+            _sprite.sprite = idleSprite;
+        }
     }
     public void ShowMoving()
     {

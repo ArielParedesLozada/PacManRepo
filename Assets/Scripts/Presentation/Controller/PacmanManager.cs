@@ -32,7 +32,9 @@ public class PacmanManager : IInitializable, ITickable
 
     public void Tick()
     {
-        if (_pacman == null || _pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
+        if (_pacman == null) return;
+        Debug.Log($"SOY EL PACMAN. MI ESTADO ES {_pacman.PacManState} Y ME DURA {_pacman.EmpoweredTimer}");
+        if (_pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
             return;
         _pacman.NextDirection = new Position(0, 0);
         if (Input.GetKey(KeyCode.RightArrow))
@@ -52,7 +54,6 @@ public class PacmanManager : IInitializable, ITickable
             _pacman.NextDirection = new Position(0, -1);
         }
         _movePacman.Move(Time.deltaTime);
-        Debug.Log($"SOY EL PACMAN. MI ESTADO ES {_pacman.PacManState} Y ME DURA {_pacman.EmpoweredTimer}");
         if (_pacman.PacManState == PacManState.Empowered)
         {
             _pacman.EmpoweredTimer -= Time.deltaTime;

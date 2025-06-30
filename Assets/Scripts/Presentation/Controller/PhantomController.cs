@@ -7,6 +7,10 @@ public class PhantomController : MonoBehaviour
     private MoveContext _moveContext;
     private CollisionContext _collisionContext;
     private PhantomEntity _ghost;
+    public PhantomEntity Phantom
+    {
+        get { return _ghost; }
+    }
     private PacmanEntity _pacman;
     private ISubjectGame _gameBoard;
     [Header("Configuracion")]
