@@ -53,11 +53,11 @@ public class PacmanManager : IInitializable, ITickable
         }
         _movePacman.Move(Time.deltaTime);
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
-        if (_pacman.CurrentNode != null) Debug.Log($"Estoy en la {_pacman.CurrentNode.DebugName}");
-        if (_pacman.TargetNode != null) Debug.Log($"Me dirijo a la {_pacman.TargetNode.DebugName}");
+        // if (_pacman.CurrentNode != null) Debug.Log($"Estoy en la {_pacman.CurrentNode.DebugName}");
+        // if (_pacman.TargetNode != null) Debug.Log($"Me dirijo a la {_pacman.TargetNode.DebugName}");
         if (_consume.Consume(_pacman, currentTile))
         {
-            Debug.Log($"juego {_game.Score}");
+            // Debug.Log($"juego {_game.Score}");
         }
         _transform.position = new Vector3(_pacman.Position.X, _pacman.Position.Y, 0);
     }

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class MoveFrightened : IStrategyMoveGhost
 {
     public IPosition ChooseTargetTile(PhantomEntity phantom, IPosition pmPos, IPosition pmDir)
@@ -7,6 +9,7 @@ public class MoveFrightened : IStrategyMoveGhost
 
     public void Move(PhantomEntity ghost, PacmanEntity pacman, float deltaTime)
     {
+        Debug.Log("ME MUEVO MODO FRIGHTENED SIGMA");
         // 1. Calcular el "target tile" (posición objetivo) según el tipo de fantasma
         IPosition targetTile = ChooseTargetTile(ghost, pacman.Position, pacman.Direction);
 

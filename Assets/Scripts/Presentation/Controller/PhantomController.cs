@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PhantomController : MonoBehaviour
 {
-    private IStrategyMoveGhost _moveGhost;
+    private MoveFactory _strategyFactory;
     private PhantomEntity _ghost;
     private PacmanEntity _pacman;
     private ISubjectGame _gameBoard;
+    [Header("Configuracion")]
+    public NodeController _homeNode;
+    public NodeController _targetNode;
 
     public void Initialize(
         PhantomEntity ghost,
-        IStrategyMoveGhost moveGhost,
+        MoveFactory strategyFactory,
         PacmanEntity pacman,
         ISubjectGame gameBoard)
     {
         _ghost = ghost;
-        _moveGhost = moveGhost;
+        _strategyFactory = strategyFactory;
         _pacman = pacman;
         _gameBoard = gameBoard;
         _ghost.DebugName = name;
@@ -24,20 +25,17 @@ public class PhantomController : MonoBehaviour
 
     void Update()
     {
-        if (_ghost == null || _moveGhost == null || _pacman == null || _gameBoard == null)
+        if (_ghost == null || _strategyFactory == null || _pacman == null || _gameBoard == null)
             return;
 
-        // Solo mover si el fantasma está activo
         if (_ghost.State == GhostState.Still)
             return;
 
-        // Ejecutar la lógica de movimiento del fantasma
-        _moveGhost.Move(_ghost, _pacman, Time.deltaTime);
-
-        // Actualizar la posición visual del GameObject
+        var moveStrategy = _strategyFactory.GetStrategy(_ghost.State);
+        moveStrategy.Move(_ghost, _pacman, Time.deltaTime);
+        Debug.Log($"SOY {_ghost.Name} Y MI ESTADO ES {_ghost.State} WAZA");
         transform.position = new Vector3(_ghost.Position.X, _ghost.Position.Y, 0);
     }
-
     public PhantomEntity ToEntity()
     {
         GhostName nombre = GhostName.Red;
@@ -51,17 +49,20 @@ public class PhantomController : MonoBehaviour
 
         if (_ghost == null)
         {
+            var speed = new LevelSetter().GetLevel();
             // Crear entidad básica con valores por defecto
             var pos = new Position(transform.position.x, transform.position.y);
             _ghost = new PhantomEntity
-            {
-                Position = pos,
-                Size = new Position(1, 1), // o el tamaño que manejes
-                Direction = new Position(1, 0),
-                State = GhostState.Still,
-                Name = nombre, // O puedes hacerlo configurable por inspector
-                DebugName = name
-            };
+            (
+                pos,
+                new Position(1, 1), // o el tamaño que manejes
+                new Position(0, 1),
+                nombre,// O puedes hacerlo configurable por inspector
+                _homeNode.NodeEntity,
+                _targetNode.NodeEntity,
+                speed
+            );
+            _ghost.DebugName = name;
         }
 
         return _ghost;

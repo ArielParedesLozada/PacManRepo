@@ -1,72 +1,99 @@
+using UnityEngine;
+
 public class MoveChase : IStrategyMoveGhost
 {
-    public IPosition CanMove(PhantomEntity g, IPosition dir, IPosition targetPosition)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public IPosition ChooseTargetTile(PhantomEntity phantom, IPosition pmPos, IPosition pmDir)
     {
         switch (phantom.Name)
         {
             case GhostName.Red:
-                return new Position(pmPos.X, pmPos.Y);
+                return pmPos;
             case GhostName.Pink:
-                return new Position(pmPos.X, pmPos.Y).Add(pmDir).Multiply(4f);
+                return pmPos.Add(pmDir.Multiply(4f));
             case GhostName.Blue:
-                return new Position(pmPos.X, pmPos.Y).Add(pmDir).Multiply(6f);
+                return pmPos.Add(pmDir.Multiply(6f));
             case GhostName.Orange:
-                return new Position(pmPos.X, pmPos.Y).Add(pmDir).Multiply(8f);
+                return pmPos.Add(pmDir.Multiply(8f));
             default:
-                return new Position(pmPos.X, pmPos.Y);
+                return new Position(0, 0);
         }
     }
 
     public void Move(PhantomEntity ghost, PacmanEntity pacman, float deltaTime)
     {
-        // 1. Calcular el "target tile" (posición objetivo) según el tipo de fantasma
-        IPosition targetTile = ChooseTargetTile(ghost, pacman.Position, pacman.Direction);
-
-        // 2. Buscar el vecino que más acerque al objetivo (evitando retroceder)
-        NodeEntity bestNeighbor = null;
-        IPosition bestDirection = null;
-        float bestDist = float.MaxValue;
-
-        for (int i = 0; i < ghost.CurrentNode.Neighbors.Length; i++)
+        Debug.Log("ME MUEVO MODO CHASE SIGMA");
+        // Si está en movimiento entre nodos
+        if (ghost.TargetNode != null && ghost.PreviousNode != null)
         {
-            var neighbor = ghost.CurrentNode.Neighbors[i];
-            var direction = ghost.CurrentNode.ValidDirections[i];
+            ghost.Position = ghost.Position.Add(ghost.Direction.Multiply(ghost.Speed * deltaTime));
 
-            // Evitar retroceder
-            if (ghost.Direction != null && direction.Multiply(-1).Equals(ghost.Direction))
-                continue;
-
-            float dist = neighbor.Position.Subtract(targetTile).SqrMagnitude();
-            if (dist < bestDist)
+            // Verificar si llegó o sobrepasó el nodo destino
+            if (HasOverShotTarget(ghost))
             {
-                bestDist = dist;
-                bestNeighbor = neighbor;
-                bestDirection = direction;
+                ghost.Position = ghost.TargetNode.Position;
+                ghost.CurrentNode = ghost.TargetNode;
+                ghost.PreviousNode = null;
+                ghost.TargetNode = null;
+            }
+            else
+            {
+                return; // Sigue en trayecto, no decidir aún
             }
         }
 
-        // 3. Si hay un vecino válido, moverse hacia él
-        if (bestNeighbor != null)
+        // Si está en un nodo y puede decidir hacia dónde ir
+        if (ghost.CurrentNode != null && ghost.TargetNode == null)
         {
-            ghost.Direction = bestDirection;
-            ghost.CurrentNode = null;
-            ghost.Position = ghost.Position.Add(ghost.Direction.Multiply(ghost.Speed * deltaTime));
-            ghost.CurrentNode = bestNeighbor;
-        }
-        else
-        {
-            // Si no hay movimiento posible, quedarse quieto
-            ghost.Direction = null;
+            IPosition targetTile = ChooseTargetTile(ghost, pacman.Position, pacman.Direction);
+
+            NodeEntity bestNeighbor = null;
+            IPosition bestDirection = null;
+            float bestDist = float.MaxValue;
+
+            for (int i = 0; i < ghost.CurrentNode.Neighbors.Length; i++)
+            {
+                var neighbor = ghost.CurrentNode.Neighbors[i];
+                var direction = ghost.CurrentNode.ValidDirections[i];
+
+                if (neighbor == null || direction == null)
+                    continue;
+
+                // Evitar retroceder
+                if (ghost.Direction != null && direction.Multiply(-1).Equals(ghost.Direction))
+                    continue;
+
+                float dist = neighbor.Position.Subtract(targetTile).SqrMagnitude();
+                if (dist < bestDist)
+                {
+                    bestDist = dist;
+                    bestNeighbor = neighbor;
+                    bestDirection = direction;
+                }
+            }
+
+            if (bestNeighbor != null)
+            {
+                ghost.Direction = bestDirection;
+                ghost.PreviousNode = ghost.CurrentNode;
+                ghost.TargetNode = bestNeighbor;
+                ghost.CurrentNode = null;
+            }
+            else
+            {
+                // No puede moverse, se queda quieto
+                ghost.Direction = null;
+            }
         }
     }
 
-    public bool Overshot(PhantomEntity ghost)
+    private bool HasOverShotTarget(PhantomEntity ghost)
     {
-        throw new System.NotImplementedException();
+        if (ghost.PreviousNode == null || ghost.TargetNode == null)
+            return false;
+
+        var fromPrevToTarget = ghost.TargetNode.Position.Subtract(ghost.PreviousNode.Position);
+        var fromPrevToNow = ghost.Position.Subtract(ghost.PreviousNode.Position);
+
+        return fromPrevToNow.SqrMagnitude() >= fromPrevToTarget.SqrMagnitude() - 0.01f;
     }
 }

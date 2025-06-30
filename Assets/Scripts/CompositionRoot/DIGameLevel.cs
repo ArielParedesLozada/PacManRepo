@@ -96,14 +96,12 @@ public class DIGameLevel : MonoInstaller
         // --- 6. Lógica de consumo
         Container.Bind<IStrategyConsume>().To<ConsumePellet>().AsSingle()
                 .WithArguments(Container.Resolve<ISubjectGame>());
-
         // --- 7. Vincular PacmanManager (lógica pura, sin MonoBehaviour)
         Container.BindInterfacesTo<PacmanManager>().AsSingle();
 
         // --- 8. Otros (opcional)
         Container.Bind<PacmanInit>().FromInstance(pacmanInit).AsSingle();
         Container.Bind<PhantomInit>().FromInstance(phantomInit).AsSingle();
-
         Debug.Log("🏁 DIGameLevel.InstallBindings finalizado correctamente");
     }
 }

@@ -15,6 +15,28 @@ public class PhantomEntity
     public GhostName Name { get; set; }
     public string DebugName { get; set; }
 
+    public PhantomEntity(
+        IPosition position,
+        IPosition size,
+        IPosition direction,
+        GhostName name,
+        NodeEntity current,
+        NodeEntity home,
+        float speed
+    )
+    {
+        Position = position;
+        Size = size;
+        Direction = direction;
+        Name = name;
+        CurrentNode = current;
+        TargetNode = current;
+        PreviousNode = current;
+        HomeNode = home;
+        State = GhostState.Chase;
+        Speed = speed;
+    }
+
     public void Die()
     {
         State = GhostState.Consumed;
