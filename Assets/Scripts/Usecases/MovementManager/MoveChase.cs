@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class MoveChase : IStrategyMoveGhost
 {
     public IPosition ChooseTargetTile(PhantomEntity phantom, IPosition pmPos, IPosition pmDir)
@@ -21,7 +19,6 @@ public class MoveChase : IStrategyMoveGhost
 
     public void Move(PhantomEntity ghost, PacmanEntity pacman, float deltaTime)
     {
-        Debug.Log("ME MUEVO MODO CHASE SIGMA");
         // Si está en movimiento entre nodos
         if (ghost.TargetNode != null && ghost.PreviousNode != null)
         {

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public enum GhostState { Scatter, Chase, Frightened, Consumed, Still, }
 
 public enum GhostName { Red, Pink, Blue, Orange }
@@ -44,8 +46,8 @@ public class PhantomEntity
 
     public void Revive()
     {
-        Direction = Direction.Zero().Add(new Position(0, 1));
-        State = GhostState.Scatter;
+        Direction = Direction.Zero().Add(new Position(0, -1));
+        State = GhostState.Chase;
     }
 
     public void Deactivate()
@@ -55,11 +57,30 @@ public class PhantomEntity
     }
     public void Activate()
     {
-        State = GhostState.Scatter;
+        State = GhostState.Chase;
     }
 
     public void Scare()
     {
         State = GhostState.Frightened;
+    }
+    public string PrintSafe()
+    {
+        var nullFields = new List<string>();
+
+        if (Position == null) nullFields.Add(nameof(Position));
+        if (Direction == null) nullFields.Add(nameof(Direction));
+        if (TargetNode == null) nullFields.Add(nameof(TargetNode));
+        if (PreviousNode == null) nullFields.Add(nameof(PreviousNode));
+        if (CurrentNode == null) nullFields.Add(nameof(CurrentNode));
+        if (HomeNode == null) nullFields.Add(nameof(HomeNode));
+        if (Size == null) nullFields.Add(nameof(Size));
+        if (DebugName == null) nullFields.Add(nameof(DebugName));
+
+        // Los enums y valores primitivos nunca son null, no necesitan comprobación
+
+        return nullFields.Count > 0
+            ? $"Campos nulos: {string.Join(", ", nullFields)}"
+            : "Todos los campos tienen valores";
     }
 }

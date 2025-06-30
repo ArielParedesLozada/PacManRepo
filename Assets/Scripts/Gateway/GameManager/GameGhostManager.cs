@@ -31,7 +31,7 @@ public class GameGhostManager
                     ghost.Scare();
                     break;
                 case PacManState.Alive:
-                    ghost.Activate();
+                    ghost.Revive();
                     break;
                 default:
                     break;

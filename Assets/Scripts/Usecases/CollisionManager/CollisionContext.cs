@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class CollisionContext : MonoBehaviour
+public class CollisionContext
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private IStrategyGhostCollision _strategy;
 
-    // Update is called once per frame
-    void Update()
+    public void SetStrategy(IStrategyGhostCollision strategy)
     {
-        
+        _strategy = strategy;
+    }
+    public void Execute(PhantomEntity phantom, PacmanEntity pacman, ISubjectGame game)
+    {
+        _strategy.Collide(phantom, pacman, game);
     }
 }

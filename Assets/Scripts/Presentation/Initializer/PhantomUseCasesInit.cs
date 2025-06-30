@@ -8,6 +8,10 @@ public class PhantomUseCasesInit : MonoBehaviour
     [Inject] private PacmanEntity _pacman;
     [Inject] private ISubjectGame _gameBoard;
     [Inject] private MoveFactory _moveFactory;
+    [Inject] private MoveContext _moveContext;
+    [Inject] private CollisionFactory _collisionFactory;
+    [Inject] private CollisionContext _collisionContext;
+
 
     void Start()
     {
@@ -21,7 +25,7 @@ public class PhantomUseCasesInit : MonoBehaviour
                 continue;
             }
 
-            controller.Initialize(ghostEntity, _moveFactory, _pacman, _gameBoard);
+            controller.Initialize(ghostEntity, _moveFactory, _collisionFactory, _moveContext, _collisionContext, _pacman, _gameBoard);
             Debug.Log($"✅ {controller.name} inicializado con estrategia {ghostEntity.State}");
         }
     }

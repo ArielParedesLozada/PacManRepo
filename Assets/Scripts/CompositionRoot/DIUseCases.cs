@@ -14,6 +14,9 @@ public class DIUseCases : MonoInstaller
         // Container.Bind<IStrategyMoveGhost>().To<MoveScatter>().AsTransient();
         // Container.Bind<IStrategyMoveGhost>().To<MoveStill>().AsTransient();
         Container.Bind<MoveFactory>().AsSingle();
+        Container.Bind<MoveContext>().AsSingle();
+        Container.Bind<CollisionFactory>().AsSingle();
+        Container.Bind<CollisionContext>().AsSingle();
         Container.Bind<PhantomUseCasesInit>()
             .FromNewComponentOnNewGameObject()
             .WithGameObjectName("UseCasesInit")
