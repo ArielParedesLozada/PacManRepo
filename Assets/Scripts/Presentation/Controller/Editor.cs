@@ -2,39 +2,45 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Zenject;
 
 public class AddNodeControllers
 {
-    [MenuItem("Tools/Add Tile Scripts to Selected Objects")]
-    private static void AddScripts()
+    [MenuItem("Tools/Zenject/Add DITileViews to GameObjectContext Installers")]
+    private static void AddDITileViewsInstaller()
     {
-        int count = 0;
+        int modifiedCount = 0;
 
         foreach (var obj in Selection.gameObjects)
         {
-            if (obj == null) continue;
+            var context = obj.GetComponent<GameObjectContext>();
+            var installer = obj.GetComponent<DITileViews>();
 
-            // Agrega ShowPellet si no existe
-            if (obj.GetComponent<ShowPellet>() == null)
-                obj.AddComponent<ShowPellet>();
+            if (context != null && installer != null)
+            {
+                var installersList = new System.Collections.Generic.List<MonoInstaller>(context.Installers);
 
-            // Agrega FacadeTileViews si no existe
-            if (obj.GetComponent<FacadeTileViews>() == null)
-                obj.AddComponent<FacadeTileViews>();
-
-            // Agrega DITileViews (tu MonoInstaller para esa tile) si no existe
-            if (obj.GetComponent<DITileViews>() == null)
-                obj.AddComponent<DITileViews>();
-
-            count++;
+                if (!installersList.Contains(installer))
+                {
+                    installersList.Add(installer);
+                    context.Installers = installersList.ToArray();
+                    EditorUtility.SetDirty(context);
+                    modifiedCount++;
+                }
+            }
         }
 
-        Debug.Log($"✅ Scripts añadidos a {count} objetos seleccionados.");
+        Debug.Log($"✅ Se añadieron DITileViews a {modifiedCount} GameObjectContext(s) seleccionados.");
     }
 
-    [MenuItem("Tools/Add Tile Scripts to Selected Objects", true)]
+    [MenuItem("Tools/Zenject/Add DITileViews to GameObjectContext Installers", true)]
     private static bool ValidateSelection()
     {
-        return Selection.gameObjects.Length > 0;
+        foreach (var obj in Selection.gameObjects)
+        {
+            if (obj.GetComponent<GameObjectContext>() != null && obj.GetComponent<DITileViews>() != null)
+                return true;
+        }
+        return false;
     }
 }
