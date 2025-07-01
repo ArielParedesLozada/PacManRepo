@@ -3,8 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer), typeof(AudioSource))]
 public class PlayDeath : MonoBehaviour
 {
-    private bool _hasPlayed = false;
-
     [Header("Death Animation")]
     public RuntimeAnimatorController deathAnimation;
 
@@ -24,36 +22,23 @@ public class PlayDeath : MonoBehaviour
 
     public void Play()
     {
-        if (_hasPlayed)
-        {
-            Debug.Log("Ya se jugo la cosa");
-            return;
-        }
-
         if (deathAnimation == null || deathClip == null)
         {
-            Debug.LogWarning("⚠️ No se puede reproducir animación o sonido de muerte porque falta asignación.");
+            Debug.LogWarning("⚠️ Falta asignar animación o clip de muerte.");
             return;
         }
 
-        _hasPlayed = true;
-
-        // Configurar animación
+        // Activar componentes visuales
+        _sprite.enabled = true;
         _animator.runtimeAnimatorController = deathAnimation;
         _animator.enabled = true;
-        _sprite.enabled = true;
 
-        // Reproducir sonido
+        // Sonido
         _deathSound.PlayOneShot(deathClip);
     }
 
     public void Stop()
     {
         _animator.enabled = false;
-    }
-
-    public void ResetDeath()
-    {
-        _hasPlayed = false;
     }
 }
