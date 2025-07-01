@@ -1,36 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
 
 public class GameController : MonoBehaviour
 {
-    private GameBoardSubject _gameBoard;
+    [SerializeField] private Text ScoreText;
+    [SerializeField] private Text LevelText;
+    [SerializeField] private Text PlayerName;
+    [Inject] private ISubjectGame _gameBoard;
+    public int Score => _gameBoard.Score;
+    public int Level => _gameBoard.Level;
 
-    public void Initialize(GameBoardSubject gameBoard)
+    public void Initialize(ISubjectGame gameBoard)
     {
         _gameBoard = gameBoard;
     }
 
-    // Ejemplo: acceso a score, nivel, vidas
-    public int Score => _gameBoard.Score;
-    public int Level => _gameBoard.Level;
-    public int Lives => _gameBoard.Lives;
-
-    // Ejemplo: acceso a nodos y tiles lógicos
-    public NodeEntity GetNodeAt(IPosition position) => _gameBoard.GetNodeAt(position);
-    public TileEntity GetTileAt(IPosition position) => _gameBoard.GetTileAt(position);
-
-    // Ejemplo: notificar cambios a los observers (fantasmas, etc.)
-    public void Notify()
+    void Start()
     {
-        _gameBoard.Notify();
+        PlayerName.text = SessionEntity.GetInstance().CurrentPlayer.Nombre;
+    }
+    void Update()
+    {
+        if (_gameBoard == null)
+        {
+            Debug.LogWarning("SIGMA Sin gameboard");
+            return;
+        }
+        ScoreText.text = Score.ToString();
+        LevelText.text = Level.ToString();
     }
 
-    // Puedes agregar métodos para reiniciar el juego, avanzar de nivel, etc.
-    public void ResetGame()
-    {
-        // Lógica para reiniciar el estado del GameBoardSubject y notificar a los managers
-        // ...
-        Notify();
-    }
 }

@@ -114,6 +114,10 @@ public class DIGameLevel : MonoInstaller
         Container.Bind<LoseGame>().AsSingle();
         Container.Bind<FinishGameController>().FromComponentInHierarchy().AsSingle();
         #endregion
+
+        #region GameController
+        Container.Bind<GameController>().AsSingle();
+        #endregion
         Debug.Log("🏁 DIGameLevel.InstallBindings finalizado correctamente");
     }
 }
