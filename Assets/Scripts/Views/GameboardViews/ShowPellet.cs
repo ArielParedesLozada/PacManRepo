@@ -18,9 +18,5 @@ public class ShowPellet : MonoBehaviour
         {
             _renderer.enabled = visible;
         }
-        else
-        {
-            Debug.Log("No tengo un sprite");
-        }
     }
 }

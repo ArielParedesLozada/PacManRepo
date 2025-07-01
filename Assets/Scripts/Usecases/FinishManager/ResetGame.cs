@@ -1,6 +1,6 @@
 public class ResetGame
 {
-    public const int _maximumScore = 2340;
+    public const int _maximumScore = 2700;
     public bool ResetGameBoard(ISubjectGame game)
     {
         if (game.Score < _maximumScore)

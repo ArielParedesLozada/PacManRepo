@@ -33,7 +33,7 @@ public class PacmanManager : IInitializable, ITickable
     public void Tick()
     {
         if (_pacman == null) return;
-        Debug.Log($"SOY EL PACMAN. MI ESTADO ES {_pacman.PacManState} Y ME DURA {_pacman.EmpoweredTimer}");
+        // Debug.Log($"SOY EL PACMAN. MI ESTADO ES {_pacman.PacManState} Y ME DURA {_pacman.EmpoweredTimer}");
         if (_pacman.PacManState == PacManState.Dead || _pacman.PacManState == PacManState.Still)
             return;
         _pacman.NextDirection = new Position(0, 0);
