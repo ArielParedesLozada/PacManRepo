@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-public class ResetGameController : MonoBehaviour
+public class FinishGameController : MonoBehaviour
 {
     [Inject]
     private readonly ResetGame _resetter;

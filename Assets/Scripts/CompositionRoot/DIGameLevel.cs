@@ -112,7 +112,7 @@ public class DIGameLevel : MonoInstaller
         #region Reseter
         Container.Bind<ResetGame>().AsSingle();
         Container.Bind<LoseGame>().AsSingle();
-        Container.Bind<ResetGameController>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<FinishGameController>().FromComponentInHierarchy().AsSingle();
         #endregion
         Debug.Log("🏁 DIGameLevel.InstallBindings finalizado correctamente");
     }
