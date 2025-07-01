@@ -108,6 +108,11 @@ public class DIGameLevel : MonoInstaller
         // --- 8. Otros (opcional)
         Container.Bind<PacmanInit>().FromInstance(pacmanInit).AsSingle();
         Container.Bind<PhantomInit>().FromInstance(phantomInit).AsSingle();
+
+        #region Reseter
+        Container.Bind<ResetGame>().AsSingle();
+        Container.Bind<ResetGameController>().FromComponentInHierarchy().AsSingle();
+        #endregion
         Debug.Log("🏁 DIGameLevel.InstallBindings finalizado correctamente");
     }
 }

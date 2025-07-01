@@ -23,9 +23,9 @@ public class PacmanInit : MonoBehaviour
             Debug.LogError("❌ El NodeEntity inicial no fue creado correctamente.");
             return;
         }
-
+        int level = new LevelSetter().GetLevel();
         pacmanEntity = new PacmanEntity(startNode, initialSpeed, new Position(1, 1));
-        pacmanEntity.SetSpeed(1);
+        pacmanEntity.SetSpeed(level);
         movePacman = new MovePacman(pacmanEntity);
         Debug.Log("✅ PacmanInit construyó correctamente PacmanEntity y MovePacman.");
         Debug.Log($"Pacman inicia en nodo {pacmanEntity.CurrentNode}");

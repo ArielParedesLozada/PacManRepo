@@ -43,7 +43,6 @@ public class PhantomController : MonoBehaviour
 
         if (_ghost.State == GhostState.Still)
             return;
-        // Debug.Log($"DIGANOSTICO PAPU {_ghost.DebugName} : {_ghost.PrintSafe()}");
         var moveStrategy = _strategyFactory.GetStrategy(_ghost.State);
         var collisionStrategy = _collisionFactory.GetStrategy(_ghost.State);
         _moveContext.SetStrategy(moveStrategy);
