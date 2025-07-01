@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,17 +5,30 @@ public class TileInit : MonoBehaviour
 {
     public GameTilesManager Initialize()
     {
-        // Encuentra todos los TileControllers activos en la escena
         var tileControllers = GameObject.FindObjectsOfType<TileController>();
 
-        // Convierte cada uno en una TileEntity
-        var tileEntities = tileControllers
-            .Select(controller => controller.ToEntity())
-            .ToArray();
-        // Crea el GameTilesManager y le asigna las entidades
-        var tileManager = new GameTilesManager();
-        tileManager.Initialize(tileEntities); // Este método debes agregarlo si no existe
+        if (tileControllers.Length == 0)
+        {
+            Debug.LogWarning("⚠️ No se encontraron TileControllers en la escena.");
+        }
 
+        var tileEntities = tileControllers
+            .Select(tc =>
+            {
+                var entity = tc.ToEntity();
+                if (entity == null || entity.Position == null)
+                {
+                    Debug.LogError($"❌ Tile '{tc.name}' devolvió una TileEntity inválida.");
+                }
+                return entity;
+            })
+            .Where(e => e != null)
+            .ToArray();
+
+        var tileManager = new GameTilesManager();
+        tileManager.Initialize(tileEntities);
+
+        Debug.Log($"✅ Inicializadas {tileEntities.Length} TileEntities.");
         return tileManager;
     }
 }

@@ -7,6 +7,5 @@ public class DITileViews : MonoInstaller
     {
         Container.Bind<TileController>().FromComponentOn(gameObject).AsSingle();
         Container.Bind<FacadeTileViews>().FromComponentOn(gameObject).AsSingle();
-        Container.Bind<ShowPellet>().FromComponentInChildren().AsSingle();
     }
 }

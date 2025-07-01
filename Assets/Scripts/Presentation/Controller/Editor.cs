@@ -5,38 +5,34 @@ using System.Text.RegularExpressions;
 
 public class AddNodeControllers
 {
-    [MenuItem("Tools/Check isPellet in Selected Tiles")]
-    private static void CheckIsPelletInSelection()
+    [MenuItem("Tools/Add Tile Scripts to Selected Objects")]
+    private static void AddScripts()
     {
-        int totalChecked = 0;
-        int totalPellets = 0;
+        int count = 0;
 
         foreach (var obj in Selection.gameObjects)
         {
-            var tileController = obj.GetComponent<TileController>();
-            if (tileController != null)
-            {
-                totalChecked++;
-                if (tileController.isPellet)
-                {
-                    Debug.Log($"🍬 {obj.name} tiene isPellet = true");
-                    totalPellets++;
-                }
-                else
-                {
-                    Debug.Log($"🧱 {obj.name} tiene isPellet = false");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"⚠️ {obj.name} no tiene un TileController asignado.");
-            }
+            if (obj == null) continue;
+
+            // Agrega ShowPellet si no existe
+            if (obj.GetComponent<ShowPellet>() == null)
+                obj.AddComponent<ShowPellet>();
+
+            // Agrega FacadeTileViews si no existe
+            if (obj.GetComponent<FacadeTileViews>() == null)
+                obj.AddComponent<FacadeTileViews>();
+
+            // Agrega DITileViews (tu MonoInstaller para esa tile) si no existe
+            if (obj.GetComponent<DITileViews>() == null)
+                obj.AddComponent<DITileViews>();
+
+            count++;
         }
 
-        Debug.Log($"🔍 Total revisados: {totalChecked} | Total con isPellet = true: {totalPellets}");
+        Debug.Log($"✅ Scripts añadidos a {count} objetos seleccionados.");
     }
 
-    [MenuItem("Tools/Check isPellet in Selected Tiles", true)]
+    [MenuItem("Tools/Add Tile Scripts to Selected Objects", true)]
     private static bool ValidateSelection()
     {
         return Selection.gameObjects.Length > 0;

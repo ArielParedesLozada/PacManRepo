@@ -1,6 +1,8 @@
 using UnityEngine;
 
 public enum TilesValues { PelletValue = 10, BonusItemValue = 300 }
+
+[DisallowMultipleComponent]
 public class TileController : MonoBehaviour
 {
     [Header("Configuración")]
@@ -8,29 +10,45 @@ public class TileController : MonoBehaviour
     public bool isPellet;
     public bool isSuperPellet;
     public bool isBonusItem;
-    public int pointValue;
+    public int pointValue = 10;
 
     [Header("Conexiones")]
     public GameObject portalReceiver;
-    public TileEntity _tile;
+
+    [HideInInspector] public TileEntity _tile;
 
     private void Awake()
     {
-        var position = new Position(transform.position);
-        var pellet = isPellet || isSuperPellet ? new PelletEntity((int)TilesValues.PelletValue, isSuperPellet) : null;
-        var bonusItem = isBonusItem ? new BonusItemEntity((int)TilesValues.BonusItemValue) : null;
-        _tile = new TileEntity(position, pellet, bonusItem, isPortal);
-        _tile.DebugName = name;
+        EnsureTileCreated();
     }
 
+    /// <summary>
+    /// Retorna la entidad Tile asociada.
+    /// Si aún no ha sido creada, la genera.
+    /// </summary>
     public TileEntity ToEntity()
     {
-        var position = new Position(transform.position);
-        var pellet = isPellet || isSuperPellet ? new PelletEntity((int)TilesValues.PelletValue, isSuperPellet) : null;
-        var bonus = isBonusItem ? new BonusItemEntity(pointValue) : null;
+        return EnsureTileCreated();
+    }
 
-        var tile = new TileEntity(position, pellet, bonus, isPortal);
-        tile.DebugName = name;
-        return tile;
+    private TileEntity EnsureTileCreated()
+    {
+        if (_tile == null)
+        {
+            var position = new Position(transform.position);
+
+            PelletEntity pellet = null;
+            if (isPellet || isSuperPellet)
+                pellet = new PelletEntity((int)TilesValues.PelletValue, isSuperPellet);
+
+            BonusItemEntity bonus = null;
+            if (isBonusItem)
+                bonus = new BonusItemEntity(pointValue);
+
+            _tile = new TileEntity(position, pellet, bonus, isPortal);
+            _tile.DebugName = name;
+        }
+
+        return _tile;
     }
 }
