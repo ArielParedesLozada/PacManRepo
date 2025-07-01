@@ -10,13 +10,25 @@ public class ResetGameController : MonoBehaviour
     private readonly ResetGame _resetter;
     [Inject]
     private readonly ISubjectGame _game;
+    [Inject]
+    private readonly LoseGame _loser;
+    [Inject]
+    private readonly PacmanEntity _pacman;
     private bool _isReloading = false;
     void Update()
     {
-        if (!_isReloading && _resetter.ResetGameBoard(_game))
+        if (_isReloading)
+        {
+            return;
+        }
+        if (_loser.IsOver(_pacman, _game))
         {
             _isReloading = true;
-            Debug.Log($"Mi nivel actual es {new LevelSetter().GetLevel()} PAPU");
+            SceneManager.LoadScene("Login");
+        }
+        if (_resetter.ResetGameBoard(_game))
+        {
+            _isReloading = true;
             SceneManager.LoadScene("Level1");
         }
     }

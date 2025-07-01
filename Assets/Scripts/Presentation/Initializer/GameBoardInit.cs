@@ -17,6 +17,7 @@ public class GameBoardInit : MonoBehaviour
         tilesManager = tiles;
         ghostManager = ghosts;
         _gameBoardSubject = new GameBoardSubject();
+        _gameBoardSubject.Level = new LevelSetter().GetLevel();
         _gameBoardSubject.Initialize(tilesManager, ghostManager, nodes);
     }
 }
