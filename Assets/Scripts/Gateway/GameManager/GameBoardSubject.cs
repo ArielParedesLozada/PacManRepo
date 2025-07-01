@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
-
 public class GameBoardSubject : ISubjectGame
 {
     private GameTilesManager _tiles;
@@ -30,7 +28,7 @@ public class GameBoardSubject : ISubjectGame
 
     public TileEntity GetTileAt(IPosition position)
     {
-        var rounded = new Position(Mathf.RoundToInt(position.X), Mathf.RoundToInt(position.Y));
+        var rounded = new Position(position.X, position.Y);
         return _tiles.GetTileAt(rounded);
     }
 

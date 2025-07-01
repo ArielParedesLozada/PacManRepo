@@ -23,26 +23,17 @@ public class FacadePacmanView : MonoBehaviour
             Debug.LogError("PlayMovement no encontrado en FacadePacmanView.");
             return;
         }
-
-        // Aquí debes agregar una condición para que no se reproduzca el sonido siempre
-        // Solo si Pacman se está moviendo, por ejemplo
         if (ShouldChomp())
         {
-            Debug.Log("SIGMA");
             _playMovement.Chomp();
         }
         else
         {
-            Debug.Log("NO SIGMA");
             _playMovement.StopChomp();
         }
         if (ShouldDie())
         {
             _playDeath.Play();
-        }
-        else
-        {
-            _playDeath.Stop();
         }
     }
 
@@ -57,7 +48,6 @@ public class FacadePacmanView : MonoBehaviour
         }
         catch
         {
-            Debug.Log("error maluco");
             return false;
         }
     }

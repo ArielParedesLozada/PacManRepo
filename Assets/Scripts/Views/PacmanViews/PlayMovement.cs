@@ -24,6 +24,8 @@ public class PlayMovement : MonoBehaviour
     Animator _anim;
     SpriteRenderer _sprite;
     Vector3 _startLocalPos;
+    public float chompCooldown = 0.25f; // tiempo mínimo entre sonidos
+    float _lastChompTime = -999f;
     void Awake()
     {
         _audio = GetComponent<AudioSource>();
@@ -33,6 +35,11 @@ public class PlayMovement : MonoBehaviour
     }
     public void Chomp()
     {
+        if (Time.time - _lastChompTime < chompCooldown)
+            return; // demasiado pronto, no reproducir
+
+        _lastChompTime = Time.time;
+
         if (_anim.runtimeAnimatorController != chompAnimation)
         {
             _anim.runtimeAnimatorController = chompAnimation;
