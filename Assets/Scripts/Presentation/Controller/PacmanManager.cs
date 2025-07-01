@@ -66,7 +66,7 @@ public class PacmanManager : IInitializable, ITickable
         TileEntity currentTile = _game.GetTileAt(_pacman.Position);
         if (_consume.Consume(_pacman, currentTile))
         {
-            Debug.Log($"juego {_game.Score}");
+            Debug.Log($"PASE POR LA TILE {currentTile.DebugName} SCORE ACTUAL {_game.Score}");
         }
         _transform.position = new Vector3(_pacman.Position.X, _pacman.Position.Y, 0);
     }

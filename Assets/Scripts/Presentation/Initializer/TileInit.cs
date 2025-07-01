@@ -14,7 +14,6 @@ public class TileInit : MonoBehaviour
         var tileEntities = tileControllers
             .Select(controller => controller.ToEntity())
             .ToArray();
-
         // Crea el GameTilesManager y le asigna las entidades
         var tileManager = new GameTilesManager();
         tileManager.Initialize(tileEntities); // Este método debes agregarlo si no existe

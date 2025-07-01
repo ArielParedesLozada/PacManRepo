@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class GameTilesManager
 {
     private TileEntity[] _tiles;

@@ -5,25 +5,38 @@ using System.Text.RegularExpressions;
 
 public class AddNodeControllers
 {
-    [MenuItem("Tools/Remove NodeController from Selected Objects")]
-    private static void RemoveNodeControllerFromSelected()
+    [MenuItem("Tools/Check isPellet in Selected Tiles")]
+    private static void CheckIsPelletInSelection()
     {
-        int removedCount = 0;
+        int totalChecked = 0;
+        int totalPellets = 0;
 
         foreach (var obj in Selection.gameObjects)
         {
-            var nodeController = obj.GetComponent<NodeController>();
-            if (nodeController != null)
+            var tileController = obj.GetComponent<TileController>();
+            if (tileController != null)
             {
-                Undo.DestroyObjectImmediate(nodeController);
-                removedCount++;
+                totalChecked++;
+                if (tileController.isPellet)
+                {
+                    Debug.Log($"🍬 {obj.name} tiene isPellet = true");
+                    totalPellets++;
+                }
+                else
+                {
+                    Debug.Log($"🧱 {obj.name} tiene isPellet = false");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"⚠️ {obj.name} no tiene un TileController asignado.");
             }
         }
 
-        Debug.Log($"✅ Removidos {removedCount} componentes NodeController de los objetos seleccionados.");
+        Debug.Log($"🔍 Total revisados: {totalChecked} | Total con isPellet = true: {totalPellets}");
     }
 
-    [MenuItem("Tools/Remove NodeController from Selected Objects", true)]
+    [MenuItem("Tools/Check isPellet in Selected Tiles", true)]
     private static bool ValidateSelection()
     {
         return Selection.gameObjects.Length > 0;

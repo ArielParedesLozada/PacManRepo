@@ -20,15 +20,17 @@ public class TileController : MonoBehaviour
         var pellet = isPellet || isSuperPellet ? new PelletEntity((int)TilesValues.PelletValue, isSuperPellet) : null;
         var bonusItem = isBonusItem ? new BonusItemEntity((int)TilesValues.BonusItemValue) : null;
         _tile = new TileEntity(position, pellet, bonusItem, isPortal);
+        _tile.DebugName = name;
     }
 
     public TileEntity ToEntity()
     {
         var position = new Position(transform.position);
-        var pellet = isPellet || isSuperPellet ? new PelletEntity(10, isSuperPellet) : null;
+        var pellet = isPellet || isSuperPellet ? new PelletEntity((int)TilesValues.PelletValue, isSuperPellet) : null;
         var bonus = isBonusItem ? new BonusItemEntity(pointValue) : null;
 
-        return new TileEntity(position, pellet, bonus, isPortal);
+        var tile = new TileEntity(position, pellet, bonus, isPortal);
+        tile.DebugName = name;
+        return tile;
     }
-
 }

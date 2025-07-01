@@ -50,7 +50,6 @@ public class PhantomEntity
 
     public void Revive()
     {
-        Direction = Direction.Zero().Add(new Position(0, -1));
         State = GhostState.Chase;
     }
 

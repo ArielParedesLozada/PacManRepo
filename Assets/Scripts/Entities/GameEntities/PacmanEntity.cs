@@ -19,7 +19,7 @@ public class PacmanEntity
     {
         CurrentNode = startNode;
         Position = startNode.Position;
-        Direction = new Position(0, 0);
+        Direction = new Position(1, 0);
         Speed = startSpeed;
         Size = size ?? new Position(1, 1);
         PacManState = PacManState.Alive;

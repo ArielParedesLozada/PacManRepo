@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class TileEntity
 {
     public IPosition Position { get; set; }
@@ -5,6 +7,7 @@ public class TileEntity
     public PelletEntity Pellet { get; set; }
     public bool IsEmpty { get; set; }
     public bool IsPortal { get; set; }
+    public string DebugName { get; set; }
     public TileEntity(IPosition position, PelletEntity pellet, BonusItemEntity bonus, bool isPortal)
     {
         Position = position;
@@ -16,8 +19,9 @@ public class TileEntity
 
     public void ToEmpty()
     {
+        IsEmpty = true;
         BonusItem = null;
         Pellet = null;
-        IsEmpty = true;
+        Debug.Log($"WAZA {DebugName} + CONSUMED = {IsEmpty}");
     }
 }
