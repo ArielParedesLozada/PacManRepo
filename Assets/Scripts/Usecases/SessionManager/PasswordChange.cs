@@ -16,6 +16,5 @@ public class PasswordChange
         }
         player.ChangePassword(nuevaClave);
         _database.Update(player);
-        SessionEntity.DestroySession();
     }
 }
