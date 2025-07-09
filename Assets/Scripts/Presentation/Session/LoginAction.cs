@@ -6,6 +6,8 @@ using Zenject;
 public class LoginAction : MonoBehaviour
 {
     [SerializeField] private InputField nombreInput;
+    [SerializeField] private InputField claveInput;
+
     [SerializeField] private Button ingresarButton;
 
     private IDatabase<PlayerEntity> _database;
@@ -26,6 +28,7 @@ public class LoginAction : MonoBehaviour
     private void OnIngresarClick()
     {
         string nombre = nombreInput.text.Trim();
+        string clave = claveInput.text.Trim();
 
         if (string.IsNullOrEmpty(nombre))
         {
@@ -35,8 +38,8 @@ public class LoginAction : MonoBehaviour
 
         try
         {
-            ISetPlayerSession setPlayer = _strategyProvider.GetPlayerSession(nombre);
-            setPlayer.SetSession(nombre);
+            ISetPlayerSession setPlayer = _strategyProvider.GetPlayerSession(nombre, clave);
+            setPlayer.SetSession(nombre, clave);
             SceneManager.LoadScene("Level1");
         }
         catch (System.Exception ex)

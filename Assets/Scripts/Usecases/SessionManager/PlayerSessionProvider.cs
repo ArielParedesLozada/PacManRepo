@@ -14,9 +14,9 @@ public class PlayerSessionProvider : IPlayerSessionProvider
         _database = database;
         _container = container;
     }
-    public ISetPlayerSession GetPlayerSession(string player)
+    public ISetPlayerSession GetPlayerSession(string player, string clave)
     {
-        var found = _database.FindByName(player);
+        var found = _database.FindUser(player, clave);
         if (found != null)
         {
             return _container.Instantiate<LoginPlayer>();

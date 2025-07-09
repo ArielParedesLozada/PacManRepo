@@ -1,13 +1,15 @@
 public class PlayerEntity
 {
     public string Nombre { get; }
+    public string Clave { get; }
     public int MaxScore { get; private set; }
     public int LastScore { get; private set; }
     public int MaxLevel { get; private set; }
     public int LastLevel { get; private set; }
-    public PlayerEntity(string nombre, int maxScore = 0, int lastScore = 0, int maxLevel = 1, int lastLevel = 1)
+    public PlayerEntity(string nombre, string clave, int maxScore = 0, int lastScore = 0, int maxLevel = 1, int lastLevel = 1)
     {
         Nombre = nombre;
+        Clave = clave;
         MaxScore = maxScore;
         LastScore = lastScore;
         LastLevel = lastLevel;

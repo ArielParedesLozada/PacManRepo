@@ -34,6 +34,7 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
                     @"CREATE TABLE IF NOT EXISTS players (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         nombre TEXT UNIQUE NOT NULL,
+                        clave TEXT NOT NULL,
                         max_score INTEGER,
                         last_score INTEGER,
                         max_level INTEGER,
@@ -51,9 +52,10 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
             connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = @"INSERT INTO players (nombre, max_score, last_score, max_level, last_level)
-                                        VALUES (@nombre, @max_score, @last_score, @max_level, @last_level);";
+                command.CommandText = @"INSERT INTO players (nombre, clave, max_score, last_score, max_level, last_level)
+                                        VALUES (@nombre, @clave, @max_score, @last_score, @max_level, @last_level);";
                 command.Parameters.AddWithValue("@nombre", element.Nombre);
+                command.Parameters.AddWithValue("@clave", element.Clave);
                 command.Parameters.AddWithValue("@max_score", element.MaxScore);
                 command.Parameters.AddWithValue("@last_score", element.LastScore);
                 command.Parameters.AddWithValue("@max_level", element.MaxLevel);
@@ -64,26 +66,28 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
         Debug.Log($"✅ Jugador '{element.Nombre}' agregado.");
     }
 
-    public PlayerEntity FindByName(string nombre)
+    public PlayerEntity FindUser(string nombre, string clave)
     {
         using (var connection = new SqliteConnection(_dbPath))
         {
             connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = @"SELECT nombre, max_score, last_score, max_level, last_level FROM players WHERE nombre = @nombre;";
+                command.CommandText = @"SELECT nombre, clave, max_score, last_score, max_level, last_level FROM players WHERE nombre = @nombre AND clave = @clave;";
                 command.Parameters.AddWithValue("@nombre", nombre);
+                command.Parameters.AddWithValue("@clave", clave);
 
                 using (IDataReader reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
                         string nombreDb = reader.GetString(0);
-                        int maxScore = reader.GetInt32(1);
-                        int lastScore = reader.GetInt32(2);
-                        int maxLevel = reader.GetInt32(3);
-                        int lastLevel = reader.GetInt32(4);
-                        return new PlayerEntity(nombreDb, maxScore, lastScore, maxLevel, lastLevel);
+                        string claveDb = reader.GetString(1);
+                        int maxScore = reader.GetInt32(1+1);
+                        int lastScore = reader.GetInt32(2+1);
+                        int maxLevel = reader.GetInt32(3+1);
+                        int lastLevel = reader.GetInt32(4+1);
+                        return new PlayerEntity(nombreDb, claveDb, maxScore, lastScore, maxLevel, lastLevel);
                     }
                 }
             }

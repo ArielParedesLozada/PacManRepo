@@ -5,9 +5,9 @@ public class LoginPlayer : ISetPlayerSession
     {
         Database = database;
     }
-    public void SetSession(string name)
+    public void SetSession(string name, string clave)
     {
-        PlayerEntity current = this.Database.FindByName(name);
+        PlayerEntity current = this.Database.FindUser(name, clave);
         if (current == null)
         {
             throw new System.Exception("Error Skibidi: Este jugador no esta registrado. Problema en UseCases/LoginPlayer");

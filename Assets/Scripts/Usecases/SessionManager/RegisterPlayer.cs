@@ -5,9 +5,9 @@ public class RegisterPlayer : ISetPlayerSession
     {
         Database = database;
     }
-    public void SetSession(string name)
+    public void SetSession(string name, string clave)
     {
-        PlayerEntity player = new PlayerEntity(name);
+        PlayerEntity player = new PlayerEntity(name, clave);
         Database.Add(player);
         SessionEntity.CreateSession(player);
     }
