@@ -2,29 +2,22 @@ using Zenject;
 
 public class PlayerSessionProvider : IPlayerSessionProvider
 {
-
     private readonly IDatabase<PlayerEntity> _database;
-    private readonly DiContainer _container;
 
-    public PlayerSessionProvider(
-        IDatabase<PlayerEntity> database,
-        DiContainer container
-    )
+    public PlayerSessionProvider(IDatabase<PlayerEntity> database)
     {
         _database = database;
-        _container = container;
     }
-    public ISetPlayerSession GetPlayerSession(string player)
+
+    public ISetPlayerSession GetPlayerSession(string player, string password, bool isNew)
     {
-        var found = _database.FindByName(player);
-        if (found != null)
+        if (isNew)
         {
-            return _container.Instantiate<LoginPlayer>();
+            return new RegisterPlayer(_database, password);
         }
         else
         {
-            return _container.Instantiate<RegisterPlayer>();
+            return new LoginPlayer(_database, password);
         }
     }
-
 }

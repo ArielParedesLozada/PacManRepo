@@ -1,6 +1,7 @@
 using System.Data;
 using UnityEngine;
 using Mono.Data.Sqlite;
+using System;
 
 public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
 {
@@ -32,13 +33,20 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
             {
                 command.CommandText =
                     @"CREATE TABLE IF NOT EXISTS players (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        nombre TEXT UNIQUE NOT NULL,
-                        max_score INTEGER,
-                        last_score INTEGER,
-                        max_level INTEGER,
-                        last_level INTEGER
-                    );";
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT UNIQUE NOT NULL,
+                    password TEXT,
+                    max_score INTEGER,
+                    last_score INTEGER,
+                    max_level INTEGER,
+                    last_level INTEGER
+                );
+
+                  CREATE TABLE IF NOT EXISTS password_history (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT NOT NULL,
+                    password TEXT NOT NULL
+                  );";
                 command.ExecuteNonQuery();
             }
         }
@@ -51,14 +59,24 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
             connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = @"INSERT INTO players (nombre, max_score, last_score, max_level, last_level)
-                                        VALUES (@nombre, @max_score, @last_score, @max_level, @last_level);";
+                command.CommandText = @"INSERT INTO players (nombre, password, max_score, last_score, max_level, last_level)
+                                    VALUES (@nombre, @password, @max_score, @last_score, @max_level, @last_level);";
                 command.Parameters.AddWithValue("@nombre", element.Nombre);
+                command.Parameters.AddWithValue("@password", element.Password);
                 command.Parameters.AddWithValue("@max_score", element.MaxScore);
                 command.Parameters.AddWithValue("@last_score", element.LastScore);
                 command.Parameters.AddWithValue("@max_level", element.MaxLevel);
                 command.Parameters.AddWithValue("@last_level", element.LastLevel);
                 command.ExecuteNonQuery();
+            }
+
+            // Guardar en historial
+            using (var historyCommand = connection.CreateCommand())
+            {
+                historyCommand.CommandText = @"INSERT INTO password_history (nombre, password) VALUES (@nombre, @password);";
+                historyCommand.Parameters.AddWithValue("@nombre", element.Nombre);
+                historyCommand.Parameters.AddWithValue("@password", element.Password);
+                historyCommand.ExecuteNonQuery();
             }
         }
         Debug.Log($"✅ Jugador '{element.Nombre}' agregado.");
@@ -71,7 +89,7 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
             connection.Open();
             using (var command = connection.CreateCommand())
             {
-                command.CommandText = @"SELECT nombre, max_score, last_score, max_level, last_level FROM players WHERE nombre = @nombre;";
+                command.CommandText = @"SELECT nombre, password, max_score, last_score, max_level, last_level FROM players WHERE nombre = @nombre;";
                 command.Parameters.AddWithValue("@nombre", nombre);
 
                 using (IDataReader reader = command.ExecuteReader())
@@ -79,11 +97,12 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
                     if (reader.Read())
                     {
                         string nombreDb = reader.GetString(0);
-                        int maxScore = reader.GetInt32(1);
-                        int lastScore = reader.GetInt32(2);
-                        int maxLevel = reader.GetInt32(3);
-                        int lastLevel = reader.GetInt32(4);
-                        return new PlayerEntity(nombreDb, maxScore, lastScore, maxLevel, lastLevel);
+                        string password = reader.GetString(1);
+                        int maxScore = reader.GetInt32(2);
+                        int lastScore = reader.GetInt32(3);
+                        int maxLevel = reader.GetInt32(4);
+                        int lastLevel = reader.GetInt32(5);
+                        return new PlayerEntity(nombreDb, password, maxScore, lastScore, maxLevel, lastLevel);
                     }
                 }
             }
@@ -134,4 +153,45 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
     {
         Debug.Log("📂 Ruta DB: " + _dbPath);
     }
+
+    public bool IsPasswordUsedByAnotherPlayer(string nombre, string password)
+    {
+        using (var connection = new SqliteConnection(_dbPath))
+        {
+            connection.Open();
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"SELECT COUNT(*) FROM password_history WHERE password = @password AND nombre != @nombre;";
+                command.Parameters.AddWithValue("@password", password);
+                command.Parameters.AddWithValue("@nombre", nombre);
+                return Convert.ToInt32(command.ExecuteScalar()) > 0;
+            }
+        }
+    }
+    public void UpdatePassword(string nombre, string nuevaPassword)
+    {
+        using (var connection = new SqliteConnection(_dbPath))
+        {
+            connection.Open();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = @"UPDATE players SET password = @password WHERE nombre = @nombre;";
+                command.Parameters.AddWithValue("@nombre", nombre);
+                command.Parameters.AddWithValue("@password", nuevaPassword);
+                command.ExecuteNonQuery();
+            }
+
+            using (var historyCommand = connection.CreateCommand())
+            {
+                historyCommand.CommandText = @"INSERT INTO password_history (nombre, password) VALUES (@nombre, @password);";
+                historyCommand.Parameters.AddWithValue("@nombre", nombre);
+                historyCommand.Parameters.AddWithValue("@password", nuevaPassword);
+                historyCommand.ExecuteNonQuery();
+            }
+        }
+        Debug.Log($"🔐 Contraseña actualizada para {nombre}");
+    }
+
+
 }

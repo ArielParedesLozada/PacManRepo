@@ -5,18 +5,14 @@ using Zenject;
 
 public class LoginAction : MonoBehaviour
 {
+    [Header("Referencias UI")]
     [SerializeField] private InputField nombreInput;
+    [SerializeField] private InputField passwordInput;
     [SerializeField] private Button ingresarButton;
+    [SerializeField] private Text mensajeTexto; // Text para mostrar errores
 
-    private IDatabase<PlayerEntity> _database;
-    private IPlayerSessionProvider _strategyProvider;
-    [Inject]
-    public void Construct(
-        IPlayerSessionProvider provider
-    )
-    {
-        _strategyProvider = provider;
-    }
+    [Inject] private IDatabase<PlayerEntity> _database;
+    [Inject] private IPlayerSessionProvider _strategyProvider;
 
     private void Start()
     {
@@ -26,22 +22,36 @@ public class LoginAction : MonoBehaviour
     private void OnIngresarClick()
     {
         string nombre = nombreInput.text.Trim();
+        string password = passwordInput.text.Trim();
 
-        if (string.IsNullOrEmpty(nombre))
+        if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(password))
         {
-            Debug.LogWarning("⚠️ El nombre no puede estar vacío.");
+            MostrarMensaje("Nombre y contraseña requeridos.");
             return;
         }
 
         try
         {
-            ISetPlayerSession setPlayer = _strategyProvider.GetPlayerSession(nombre);
-            setPlayer.SetSession(nombre);
+            bool isNew = _database.FindByName(nombre) == null;
+            ISetPlayerSession sessionSetter = _strategyProvider.GetPlayerSession(nombre, password, isNew);
+            sessionSetter.SetSession(nombre);
             SceneManager.LoadScene("Level1");
         }
         catch (System.Exception ex)
         {
-            Debug.LogError($"❌ Error al iniciar sesión: {ex.Message}");
+            MostrarMensaje($"❌ {ex.Message}");
+        }
+    }
+
+    private void MostrarMensaje(string msg)
+    {
+        if (mensajeTexto != null)
+        {
+            mensajeTexto.text = msg;
+        }
+        else
+        {
+            Debug.LogWarning(msg);
         }
     }
 }
