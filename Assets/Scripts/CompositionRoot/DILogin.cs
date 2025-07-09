@@ -18,6 +18,8 @@ public class DILogin : MonoInstaller
         Container.Bind<IPlayerSessionProvider>()
                 .To<PlayerSessionProvider>()
                 .AsSingle();
+        Container.Bind<PasswordChange>().AsTransient();
+        Container.Bind<CambiaClave>().AsTransient();
     }
 
 }

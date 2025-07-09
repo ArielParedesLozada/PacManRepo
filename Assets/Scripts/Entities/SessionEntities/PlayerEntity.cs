@@ -1,7 +1,7 @@
 public class PlayerEntity
 {
     public string Nombre { get; }
-    public string Clave { get; }
+    public string Clave { get; private set; }
     public int MaxScore { get; private set; }
     public int LastScore { get; private set; }
     public int MaxLevel { get; private set; }
@@ -26,5 +26,10 @@ public class PlayerEntity
     {
         this.LastLevel = level;
         this.MaxLevel = level > MaxLevel ? level : MaxLevel;
+    }
+
+    public void ChangePassword(string clave)
+    {
+        Clave = clave;
     }
 }

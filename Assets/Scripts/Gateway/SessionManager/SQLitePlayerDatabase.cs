@@ -103,11 +103,13 @@ public class SQLitePlayerDatabase : IDatabase<PlayerEntity>
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = @"UPDATE players
-                                        SET max_score = @max_score, 
+                                        SET clave = @clave,
+                                            max_score = @max_score, 
                                             last_score = @last_score,
                                             max_level = @max_level,
                                             last_level = @last_level
                                         WHERE nombre = @nombre;";
+                command.Parameters.AddWithValue("@clave", element.Clave);
                 command.Parameters.AddWithValue("@max_level", element.MaxLevel);
                 command.Parameters.AddWithValue("@last_level", element.LastLevel);
                 command.Parameters.AddWithValue("@max_score", element.MaxScore);
